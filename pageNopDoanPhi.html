@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nộp Đoàn Phí - Hệ thống Quản lý Đoàn viên</title>
+  <meta name="description" content="Hệ thống nộp đoàn phí và xem lịch sử thanh toán cho đoàn viên Trường ĐHSPKT">
+  
+  <style>
+    /* Reset and Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --color-primary: #3782f5;
+      --color-primary-dark: #2a6bd9;
+      --color-primary-light: #e8f2ff;
+      --color-white: #ffffff;
+      --color-gray-50: #f9fafb;
+      --color-gray-100: #f3f4f6;
+      --color-gray-200: #e5e7eb;
+      --color-gray-300: #d1d5db;
+      --color-gray-400: #9ca3af;
+      --color-gray-500: #6b7280;
+      --color-gray-600: #4b5563;
+      --color-gray-700: #374151;
+      --color-gray-800: #1f2937;
+      --color-success: #10b981;
+      --color-warning: #f59e0b;
+      --color-danger: #ef4444;
+      
+      --shadow-sm: 0 2px 4px rgba(55, 130, 245, 0.08);
+      --shadow-md: 0 4px 12px rgba(55, 130, 245, 0.12);
+      --shadow-lg: 0 8px 24px rgba(55, 130, 245, 0.15);
+      --shadow-xl: 0 20px 40px rgba(55, 130, 245, 0.2);
+      
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--color-white);
+      color: var(--color-gray-800);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    /* Header */
+    .header {
+      background: var(--color-primary);
+      color: var(--color-white);
+      box-shadow: var(--shadow-md);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 0;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo-circle {
+      width: 3.5rem;
+      height: 3.5rem;
+      background: var(--color-white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-circle svg {
+      color: var(--color-primary);
+    }
+
+    .header-title {
+      font-size: 1.875rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .header-subtitle {
+      font-size: 0.875rem;
+      opacity: 0.95;
+      margin: 0;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .user-info {
+      font-size: 0.875rem;
+    }
+
+    .btn-logout {
+      padding: 0.5rem 1rem;
+      background: rgb(255, 255, 255);
+      color: var(--color-primary);
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .btn-logout:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Icons */
+    .icon-sm {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+
+    .icon-md {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    .icon-lg {
+      width: 2rem;
+      height: 2rem;
+    }
+
+    .icon-xl {
+      width: 3rem;
+      height: 3rem;
+    }
+
+    /* Main Content */
+    .main-content {
+      padding: 2rem 0;
+      min-height: calc(100vh - 160px);
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      margin-bottom: 1.5rem;
+      font-size: 0.875rem;
+      color: var(--color-gray-600);
+    }
+
+    .breadcrumb-link {
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .breadcrumb-link:hover {
+      color: var(--color-primary);
+    }
+
+    .breadcrumb-separator {
+      margin: 0 0.5rem;
+    }
+
+    .breadcrumb-current {
+      font-weight: 600;
+      color: var(--color-gray-800);
+    }
+
+    /* Notification Banner */
+    .notification-banner {
+      background: #fef3c7;
+      border-left: 4px solid var(--color-warning);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .notification-content {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .notification-icon {
+      color: var(--color-warning);
+      flex-shrink: 0;
+      margin-top: 0.125rem;
+    }
+
+    .notification-title {
+      font-weight: 700;
+      color: #92400e;
+      margin-bottom: 0.25rem;
+    }
+
+    .notification-text {
+      font-size: 0.875rem;
+      color: #78350f;
+    }
+
+    .text-danger {
+      color: var(--color-danger);
+    }
+
+    /* Cards */
+    .card {
+      background: var(--color-white);
+      border-radius: 0.75rem;
+      box-shadow: var(--shadow-lg);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-main {
+      border: 2px solid var(--color-primary-light);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--color-primary-light);
+    }
+
+    .card-header svg {
+      color: var(--color-primary);
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-gray-800);
+      margin: 0;
+    }
+
+    .card-subtitle {
+      font-size: 0.875rem;
+      color: var(--color-gray-500);
+      margin: 0;
+    }
+
+    /* Payment Card */
+    .payment-card {
+      background: linear-gradient(135deg, var(--color-primary), #5296ff);
+      border-radius: 0.75rem;
+      padding: 2rem;
+      color: var(--color-white);
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-xl);
+    }
+
+    .payment-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .payment-info-label {
+      font-size: 0.875rem;
+      opacity: 0.9;
+      margin-bottom: 0.25rem;
+    }
+
+    .payment-info-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .payment-amount {
+      color: #fef08a;
+    }
+
+    .btn-pay {
+      width: 100%;
+      padding: 1rem 2rem;
+      background: var(--color-white);
+      color: var(--color-primary);
+      border: none;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      font-size: 1.125rem;
+      font-weight: 700;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-pay:hover {
+      background: var(--color-primary-light);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    .payment-success {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .payment-success svg {
+      margin: 0 auto 0.5rem;
+    }
+
+    .payment-success p {
+      font-weight: 600;
+    }
+
+    /* Payment Methods */
+    .payment-methods {
+      background: var(--color-gray-50);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+    }
+
+    .payment-methods-title {
+      font-weight: 700;
+      color: var(--color-gray-800);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .payment-methods-title svg {
+      color: var(--color-primary);
+    }
+
+    .payment-methods-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .method-card {
+      background: var(--color-white);
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      border: 2px solid var(--color-gray-200);
+      transition: var(--transition);
+    }
+
+    .method-card:hover {
+      border-color: var(--color-primary);
+      box-shadow: var(--shadow-md);
+    }
+
+    .method-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .method-title {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      color: var(--color-gray-800);
+    }
+
+    .method-desc {
+      font-size: 0.75rem;
+      color: var(--color-gray-600);
+    }
+
+    .method-detail {
+      font-size: 0.75rem;
+      color: var(--color-gray-500);
+      margin-top: 0.25rem;
+    }
+
+    /* Payment History */
+    .history-empty {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--color-gray-500);
+    }
+
+    .history-empty-icon {
+      margin: 0 auto 1rem;
+      opacity: 0.3;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .history-item {
+      border: 2px solid var(--color-gray-200);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      transition: var(--transition);
+    }
+
+    .history-item:hover {
+      border-color: var(--color-primary);
+      box-shadow: var(--shadow-md);
+    }
+
+    .history-item-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .history-item-main {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .history-item-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .history-item-semester {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--color-gray-800);
+      margin: 0;
+    }
+
+    .badge-success {
+      padding: 0.25rem 0.75rem;
+      background: #d1fae5;
+      color: var(--color-success);
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    .history-item-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      font-size: 0.875rem;
+    }
+
+    .history-item-field label {
+      display: block;
+      color: var(--color-gray-500);
+      margin-bottom: 0.25rem;
+    }
+
+    .history-item-field p {
+      font-weight: 600;
+      color: var(--color-gray-800);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .history-item-field .amount {
+      color: var(--color-primary);
+      font-size: 1.125rem;
+    }
+
+    .history-item-field .transaction-id {
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      color: var(--color-gray-600);
+    }
+
+    .btn-download {
+      padding: 0.5rem 1rem;
+      background: var(--color-gray-100);
+      color: var(--color-gray-700);
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+    }
+
+    .btn-download:hover {
+      background: var(--color-gray-200);
+    }
+
+    .history-summary {
+      margin-top: 1.5rem;
+      padding: 1.5rem;
+      background: var(--color-primary-light);
+      border-radius: 0.75rem;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+
+    .summary-item {
+      text-align: center;
+    }
+
+    .summary-label {
+      font-size: 0.875rem;
+      color: var(--color-gray-600);
+      margin-bottom: 0.5rem;
+    }
+
+    .summary-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .summary-value-blue {
+      color: var(--color-primary);
+    }
+
+    .summary-value-green {
+      color: var(--color-success);
+    }
+
+    /* Exception Alert */
+    .exception-alert {
+      background: #fee2e2;
+      border-left: 4px solid var(--color-danger);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .exception-content {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .exception-icon {
+      color: var(--color-danger);
+      flex-shrink: 0;
+      margin-top: 0.125rem;
+    }
+
+    .exception-title {
+      font-weight: 700;
+      color: #991b1b;
+      margin-bottom: 0.5rem;
+      font-size: 1.125rem;
+    }
+
+    .exception-text {
+      font-size: 0.875rem;
+      color: #7f1d1d;
+    }
+
+    .exception-list {
+      margin: 0.5rem 0 0 1.25rem;
+      padding: 0;
+    }
+
+    .exception-list li {
+      margin-bottom: 0.25rem;
+    }
+
+    .mt-3 {
+      margin-top: 1rem;
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--color-primary);
+      color: var(--color-white);
+      margin-top: 3rem;
+    }
+
+    .footer-content {
+      padding: 1.5rem 1rem;
+      text-align: center;
+    }
+
+    .footer-text {
+      font-size: 0.875rem;
+      margin: 1rem 0 0.5rem;
+      
+    }
+
+    .footer-subtext {
+      font-size: 1rem;
+      color: var(--color-white);
+      margin-top: -5px;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .modal {
+      background: var(--color-white);
+      border-radius: 1rem;
+      box-shadow: var(--shadow-xl);
+      max-width: 28rem;
+      width: 100%;
+      padding: 2rem;
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-gray-800);
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-info {
+      background: var(--color-primary-light);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-info-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+
+    .modal-info-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .modal-info-label {
+      color: var(--color-gray-600);
+    }
+
+    .modal-info-value {
+      font-weight: 700;
+      color: var(--color-gray-800);
+    }
+
+    .modal-info-amount {
+      font-weight: 700;
+      color: var(--color-primary);
+      font-size: 1.25rem;
+    }
+
+    .modal-methods {
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-gray-700);
+      margin-bottom: 0.75rem;
+    }
+
+    .method-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .method-option {
+      width: 100%;
+      padding: 1rem;
+      background: var(--color-white);
+      border: 2px solid var(--color-gray-200);
+      border-radius: 0.75rem;
+      text-align: left;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--color-gray-800);
+    }
+
+    .method-option:hover {
+      border-color: var(--color-gray-300);
+    }
+
+    .method-option.active {
+      border-color: var(--color-primary);
+      background: var(--color-primary-light);
+    }
+
+    .method-radio {
+      width: 1.25rem;
+      height: 1.25rem;
+      border: 2px solid var(--color-gray-300);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: var(--transition);
+    }
+
+    .method-option.active .method-radio {
+      border-color: var(--color-primary);
+    }
+
+    .method-radio-inner {
+      width: 0.75rem;
+      height: 0.75rem;
+      border-radius: 50%;
+      background: transparent;
+      transition: var(--transition);
+    }
+
+    .method-option.active .method-radio-inner {
+      background: var(--color-primary);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn-confirm {
+      flex: 1;
+      padding: 0.75rem 1.5rem;
+      background: var(--color-primary);
+      color: var(--color-white);
+      border: none;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .btn-confirm:hover {
+      background: var(--color-primary-dark);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-cancel {
+      padding: 0.75rem 1.5rem;
+      background: var(--color-gray-200);
+      color: var(--color-gray-700);
+      border: none;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .btn-cancel:hover {
+      background: var(--color-gray-300);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .header-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .payment-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .payment-methods-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .history-item-content {
+        flex-direction: column;
+      }
+      
+      .btn-download {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header-title {
+        font-size: 1.5rem;
+      }
+      
+      .payment-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .history-summary {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <div class="header-left">
+          <div class="logo-circle">
+            <svg class="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <rect x="2" y="5" width="20" height="14" rx="2" stroke-width="2"/>
+              <line x1="2" y1="10" x2="22" y2="10" stroke-width="2"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="header-title">Nộp Đoàn Phí</h1>
+            <p class="header-subtitle">Đoàn viên - Trường ĐHSPKT</p>
+          </div>
+        </div>
+        <div class="header-right">
+          <span class="user-info">👤 Nguyễn Văn A - 22IT001</span>
+          <button class="btn-logout">Đăng xuất</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      <!-- Breadcrumb -->
+      <div class="breadcrumb">
+        <span class="breadcrumb-link">Trang chủ</span>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">Đoàn phí</span>
+      </div>
+
+      <!-- Notification Banner -->
+      <div class="notification-banner" id="notificationBanner">
+        <div class="notification-content">
+          <svg class="icon-md notification-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke-width="2"/>
+            <line x1="12" y1="8" x2="12" y2="12" stroke-width="2"/>
+            <line x1="12" y1="16" x2="12.01" y2="16" stroke-width="2"/>
+          </svg>
+          <div>
+            <h4 class="notification-title">⚠️ Thông báo quan trọng</h4>
+            <p class="notification-text">
+              Đến kỳ đóng đoàn phí <strong id="currentSemester"></strong>. 
+              Vui lòng hoàn thành trước ngày <strong class="text-danger" id="currentDeadline"></strong>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Current Payment Card -->
+      <div class="card card-main">
+        <div class="card-header">
+          <svg class="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <line x1="12" y1="2" x2="12" y2="22" stroke-width="2"/>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke-width="2"/>
+          </svg>
+          <div>
+            <h2 class="card-title">Đoàn Phí</h2>
+            <p class="card-subtitle">Thông tin đóng phí hiện tại</p>
+          </div>
+        </div>
+
+        <div class="payment-card">
+          <div class="payment-grid">
+            <div class="payment-info-item">
+              <p class="payment-info-label">Học kỳ</p>
+              <p class="payment-info-value" id="paymentSemester"></p>
+            </div>
+            <div class="payment-info-item">
+              <p class="payment-info-label">Số tiền</p>
+              <p class="payment-info-value payment-amount" id="paymentAmount"></p>
+            </div>
+            <div class="payment-info-item">
+              <p class="payment-info-label">Hạn nộp</p>
+              <p class="payment-info-value" id="paymentDeadline"></p>
+            </div>
+            <div class="payment-info-item">
+              <p class="payment-info-label">Trạng thái</p>
+              <p class="payment-info-value" id="paymentStatus"></p>
+            </div>
+          </div>
+
+          <button class="btn-pay" id="btnPayNow">
+            <svg class="icon-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <rect x="2" y="5" width="20" height="14" rx="2" stroke-width="2"/>
+              <line x1="2" y1="10" x2="22" y2="10" stroke-width="2"/>
+            </svg>
+            NỘP NGAY
+          </button>
+
+          <div class="payment-success" id="paymentSuccess" style="display: none;">
+            <svg class="icon-xl" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke-width="2"/>
+              <polyline points="22 4 12 14.01 9 11.01" stroke-width="2"/>
+            </svg>
+            <p>Bạn đã hoàn thành đóng đoàn phí học kỳ này</p>
+          </div>
+        </div>
+
+        <!-- Payment Methods Info -->
+        <div class="payment-methods">
+          <h3 class="payment-methods-title">
+            <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke-width="2"/>
+              <polyline points="14 2 14 8 20 8" stroke-width="2"/>
+            </svg>
+            Phương thức thanh toán được chấp nhận
+          </h3>
+          <div class="payment-methods-grid">
+            <div class="method-card">
+              <div class="method-icon">🏦</div>
+              <h4 class="method-title">Chuyển khoản</h4>
+              <p class="method-desc">Ngân hàng Vietcombank</p>
+              <p class="method-detail">STK: 1234567890</p>
+            </div>
+            <div class="method-card">
+              <div class="method-icon">💵</div>
+              <h4 class="method-title">Tiền mặt</h4>
+              <p class="method-desc">Nộp trực tiếp tại văn phòng</p>
+              <p class="method-detail">Phòng A1.01</p>
+            </div>
+            <div class="method-card">
+              <div class="method-icon">📱</div>
+              <h4 class="method-title">Ví điện tử</h4>
+              <p class="method-desc">MoMo, ZaloPay, VNPay</p>
+              <p class="method-detail">Quét QR Code</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment History (Recent 2) -->
+      <div class="card">
+        <div class="card-header">
+          <svg class="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke-width="2"/>
+            <polyline points="12 6 12 12 16 14" stroke-width="2"/>
+          </svg>
+          <div>
+            <h2 class="card-title">Lịch Sử Gần Đây</h2>
+            <p class="card-subtitle">2 lần đóng gần nhất</p>
+          </div>
+        </div>
+
+        <div id="historyEmpty" class="history-empty" style="display: none;">
+          <svg class="icon-xl history-empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke-width="2"/>
+            <polyline points="12 6 12 12 16 14" stroke-width="2"/>
+          </svg>
+          <p>Chưa có lịch sử đóng đoàn phí</p>
+        </div>
+
+        <div class="history-list" id="historyList"></div>
+
+        <div id="viewAllContainer" style="display: none; margin-top: 1.5rem; text-align: center;">
+          <button class="btn-pay" id="btnViewAll" onclick="window.location.href='pageLichSuDoanPhi.html'" style="max-width: 400px; margin: 0 auto;">
+            <svg class="icon-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10" stroke-width="2"/>
+              <polyline points="12 6 12 12 16 14" stroke-width="2"/>
+            </svg>
+            XEM TẤT CẢ LỊCH SỬ
+          </button>
+        </div>
+      </div>
+
+      
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <p class="footer-text">© 2025 Hệ thống Quản lý Đoàn viên - Trường ĐHSPKT | Nhóm 37</p>
+      <p class="footer-subtext">Use Case: Nộp đoàn phí và xem lịch sử</p>
+    </div>
+  </footer>
+
+  <!-- Payment Modal -->
+  <div class="modal-overlay" id="modalOverlay" style="display: none;">
+    <div class="modal">
+      <h3 class="modal-title">Xác Nhận Thanh Toán</h3>
+      
+      <div class="modal-info">
+        <div class="modal-info-row">
+          <span class="modal-info-label">Học kỳ:</span>
+          <span class="modal-info-value" id="modalSemester"></span>
+        </div>
+        <div class="modal-info-row">
+          <span class="modal-info-label">Số tiền:</span>
+          <span class="modal-info-amount" id="modalAmount"></span>
+        </div>
+      </div>
+
+      <div class="modal-methods">
+        <label class="modal-label">
+          Chọn phương thức thanh toán <span class="text-danger">*</span>
+        </label>
+        <div class="method-options" id="methodOptions">
+          <button class="method-option" data-method="Chuyển khoản ngân hàng">
+            <div class="method-radio">
+              <div class="method-radio-inner"></div>
+            </div>
+            <span>Chuyển khoản ngân hàng</span>
+          </button>
+          <button class="method-option" data-method="Tiền mặt">
+            <div class="method-radio">
+              <div class="method-radio-inner"></div>
+            </div>
+            <span>Tiền mặt</span>
+          </button>
+          <button class="method-option" data-method="Ví điện tử (MoMo)">
+            <div class="method-radio">
+              <div class="method-radio-inner"></div>
+            </div>
+            <span>Ví điện tử (MoMo)</span>
+          </button>
+          <button class="method-option" data-method="Ví điện tử (ZaloPay)">
+            <div class="method-radio">
+              <div class="method-radio-inner"></div>
+            </div>
+            <span>Ví điện tử (ZaloPay)</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-confirm" id="btnConfirmPayment">Xác nhận thanh toán</button>
+        <button class="btn-cancel" id="btnCancelPayment">Hủy</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Application State
+    let currentPayment = {
+      semester: 'HK1-2024',
+      amount: 50000,
+      deadline: '2025-11-30',
+      status: 'unpaid'
+    };
+
+    // Load payment history from localStorage or use default
+    let paymentHistory = [];
+    try {
+      const stored = localStorage.getItem('paymentHistory');
+      if (stored) {
+        paymentHistory = JSON.parse(stored);
+      } else {
+        paymentHistory = [
+          { 
+            id: 1, 
+            semester: 'HK2-2023', 
+            date: '2024-01-15', 
+            amount: 50000, 
+            status: 'success', 
+            method: 'Chuyển khoản', 
+            transactionId: 'DP20240115001' 
+          },
+          { 
+            id: 2, 
+            semester: 'HK1-2024', 
+            date: '2024-09-10', 
+            amount: 50000, 
+            status: 'success', 
+            method: 'Tiền mặt', 
+            transactionId: 'DP20240910002' 
+          },
+        ];
+        localStorage.setItem('paymentHistory', JSON.stringify(paymentHistory));
+      }
+    } catch (e) {
+      console.error('Error loading payment history:', e);
+      // Fallback data
+      paymentHistory = [
+        { id: 1, semester: 'HK2-2023', date: '2024-01-15', amount: 50000, status: 'success', method: 'Chuyển khoản', transactionId: 'DP20240115001' },
+        { id: 2, semester: 'HK1-2024', date: '2024-09-10', amount: 50000, status: 'success', method: 'Tiền mặt', transactionId: 'DP20240910002' },
+      ];
+    }
+
+    let selectedMethod = ''; // Mô phỏng selectedMethod useState
+
+    // Utility Functions
+    function formatCurrency(amount) {
+      return amount.toLocaleString('vi-VN') + 'đ';
+    }
+
+    function getCurrentDate() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    // DOM Elements
+    const elements = {
+      notificationBanner: document.getElementById('notificationBanner'),
+      currentSemester: document.getElementById('currentSemester'),
+      currentDeadline: document.getElementById('currentDeadline'),
+      paymentSemester: document.getElementById('paymentSemester'),
+      paymentAmount: document.getElementById('paymentAmount'),
+      paymentDeadline: document.getElementById('paymentDeadline'),
+      paymentStatus: document.getElementById('paymentStatus'),
+      btnPayNow: document.getElementById('btnPayNow'),
+      paymentSuccess: document.getElementById('paymentSuccess'),
+      historyEmpty: document.getElementById('historyEmpty'),
+      historyList: document.getElementById('historyList'),
+      modalOverlay: document.getElementById('modalOverlay'),
+      modalSemester: document.getElementById('modalSemester'),
+      modalAmount: document.getElementById('modalAmount'),
+      methodOptions: document.getElementById('methodOptions'),
+      btnConfirmPayment: document.getElementById('btnConfirmPayment'),
+      btnCancelPayment: document.getElementById('btnCancelPayment')
+    };
+
+    // Render Functions
+    function renderCurrentPayment() {
+      elements.currentSemester.textContent = currentPayment.semester;
+      elements.currentDeadline.textContent = currentPayment.deadline;
+      elements.paymentSemester.textContent = currentPayment.semester;
+      elements.paymentAmount.textContent = formatCurrency(currentPayment.amount);
+      elements.paymentDeadline.textContent = currentPayment.deadline;
+      
+      if (currentPayment.status === 'paid') {
+        elements.paymentStatus.textContent = '✓ Đã đóng';
+        elements.btnPayNow.style.display = 'none';
+        elements.paymentSuccess.style.display = 'block';
+        elements.notificationBanner.style.display = 'none';
+      } else {
+        elements.paymentStatus.textContent = '✗ Chưa đóng';
+        elements.btnPayNow.style.display = 'flex';
+        elements.paymentSuccess.style.display = 'none';
+        elements.notificationBanner.style.display = 'block';
+      }
+    }
+
+    function renderPaymentHistory() {
+      const viewAllContainer = document.getElementById('viewAllContainer');
+      
+      if (paymentHistory.length === 0) {
+        elements.historyEmpty.style.display = 'block';
+        elements.historyList.innerHTML = '';
+        if (viewAllContainer) viewAllContainer.style.display = 'none';
+        return;
+      }
+
+      elements.historyEmpty.style.display = 'none';
+
+      // Show only the 2 most recent payments
+      const recentPayments = paymentHistory.slice(0, 2);
+      
+      // Show "View All" button if there are more than 2 payments
+      if (viewAllContainer) {
+          if (paymentHistory.length > 2) {
+            viewAllContainer.style.display = 'block';
+          } else {
+            viewAllContainer.style.display = 'none';
+          }
+      }
+
+
+      // Render history items
+      elements.historyList.innerHTML = recentPayments.map(payment => `
+        <div class="history-item">
+          <div class="history-item-content">
+            <div class="history-item-main">
+              <div class="history-item-header">
+                <h3 class="history-item-semester">${payment.semester}</h3>
+                <span class="badge-success">✓ Thành công</span>
+              </div>
+              
+              <div class="history-item-grid">
+                <div class="history-item-field">
+                  <label>Ngày đóng</label>
+                  <p>
+                    <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--color-primary);">
+                      <rect x="3" y="4" width="18" height="18" rx="2" stroke-width="2"/>
+                      <line x1="16" y1="2" x2="16" y2="6" stroke-width="2"/>
+                      <line x1="8" y1="2" x2="8" y2="6" stroke-width="2"/>
+                      <line x1="3" y1="10" x2="21" y2="10" stroke-width="2"/>
+                    </svg>
+                    ${payment.date}
+                  </p>
+                </div>
+                <div class="history-item-field">
+                  <label>Số tiền</label>
+                  <p class="amount">${formatCurrency(payment.amount)}</p>
+                </div>
+                <div class="history-item-field">
+                  <label>Phương thức</label>
+                  <p>${payment.method}</p>
+                </div>
+                <div class="history-item-field">
+                  <label>Mã giao dịch</label>
+                  <p class="transaction-id">${payment.transactionId}</p>
+                </div>
+              </div>
+            </div>
+            
+            <button class="btn-download" onclick="downloadReceipt('${payment.transactionId}')">
+              <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke-width="2"/>
+                <polyline points="7 10 12 15 17 10" stroke-width="2"/>
+                <line x1="12" y1="15" x2="12" y2="3" stroke-width="2"/>
+              </svg>
+              Tải biên lai
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function showPaymentModal() {
+      selectedMethod = '';
+      elements.modalSemester.textContent = currentPayment.semester;
+      elements.modalAmount.textContent = formatCurrency(currentPayment.amount);
+      
+      // Reset all method options UI
+      const methodButtons = elements.methodOptions.querySelectorAll('.method-option');
+      methodButtons.forEach(btn => btn.classList.remove('active'));
+      
+      elements.modalOverlay.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function hidePaymentModal() {
+      elements.modalOverlay.style.display = 'none';
+      document.body.style.overflow = '';
+      selectedMethod = '';
+    }
+
+    function selectPaymentMethod(method) {
+      selectedMethod = method;
+      
+      // Update UI
+      const methodButtons = elements.methodOptions.querySelectorAll('.method-option');
+      methodButtons.forEach(btn => {
+        if (btn.dataset.method === method) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    function confirmPayment() {
+      if (!selectedMethod) {
+        alert('❌ Vui lòng chọn phương thức thanh toán!');
+        return;
+      }
+
+      // Simulate payment processing
+      setTimeout(() => {
+        const newPayment = {
+          id: Date.now(),
+          semester: currentPayment.semester,
+          date: getCurrentDate(),
+          amount: currentPayment.amount,
+          status: 'success',
+          method: selectedMethod, // Lấy giá trị đã được cập nhật
+          transactionId: `DP${Date.now()}`
+        };
+
+        // Update state
+        paymentHistory.unshift(newPayment);
+        currentPayment.status = 'paid';
+        
+        // Save to localStorage
+        localStorage.setItem('paymentHistory', JSON.stringify(paymentHistory));
+        
+        // Update UI
+        hidePaymentModal();
+        renderCurrentPayment();
+        renderPaymentHistory();
+        
+        // Show success alert
+        alert(
+          `✅ Thanh toán thành công!\n\n` +
+          `Mã giao dịch: ${newPayment.transactionId}\n` +
+          `Số tiền: ${formatCurrency(newPayment.amount)}\n` +
+          `Phương thức: ${selectedMethod}`
+        );
+      }, 1000);
+    }
+
+    function downloadReceipt(transactionId) {
+      alert(`📄 Đang tải biên lai cho giao dịch: ${transactionId}\n\nChức năng này sẽ được triển khai trong phiên bản tiếp theo.`);
+    }
+
+    // Event Listeners
+    elements.btnPayNow.addEventListener('click', showPaymentModal);
+    elements.btnCancelPayment.addEventListener('click', hidePaymentModal);
+    elements.btnConfirmPayment.addEventListener('click', confirmPayment);
+
+    // Click outside modal to close
+    elements.modalOverlay.addEventListener('click', (e) => {
+      if (e.target === elements.modalOverlay) {
+        hidePaymentModal();
+      }
+    });
+
+    // Method option click handlers
+    elements.methodOptions.addEventListener('click', (e) => {
+      const button = e.target.closest('.method-option');
+      if (button) {
+        selectPaymentMethod(button.dataset.method);
+      }
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && elements.modalOverlay.style.display === 'flex') {
+        hidePaymentModal();
+      }
+    });
+
+    // Initialize
+    function init() {
+      // Cập nhật giá trị hiển thị ban đầu
+      document.getElementById('paymentSemester').textContent = currentPayment.semester;
+      document.getElementById('paymentAmount').textContent = formatCurrency(currentPayment.amount);
+      document.getElementById('paymentDeadline').textContent = currentPayment.deadline;
+      
+      renderCurrentPayment();
+      renderPaymentHistory();
+    }
+
+    // Run on page load
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

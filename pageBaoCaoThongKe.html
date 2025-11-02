@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lập Báo Cáo Thống Kê</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        /* ================================================= */
+        /* 1. KHAI BÁO BIẾN & TÔNG MÀU CHỦ ĐẠO (Blue) */
+        /* ================================================= */
+        :root {
+            --primary-color: #3782f5; /* Màu xanh dương chủ đạo */
+            --primary-dark: #2563eb;  
+            --primary-light-bg: #eef2ff; /* Màu nền trang */
+            --text-dark: #1f2937; 
+            --text-gray: #6b7280; 
+            --success-color: #10b981; 
+            --danger-color: #ef4444; 
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: var(--primary-light-bg); 
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            flex-grow: 1;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* ================================================= */
+        /* 2. HEADER & FOOTER */
+        /* ================================================= */
+
+        .header-top {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.8rem 4rem; 
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            height: auto;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-logo-icon {
+            width: 70px;
+            height: 70px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .header-logo-icon i {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+        
+        .header-logo h1 {
+            font-size: 2.2rem; 
+            font-weight: 700;
+            margin: 0;
+        }
+        .header-logo p {
+            margin-top: 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .header-user button {
+            background-color: white;
+            color: var(--primary-color);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            margin-top: 0.5rem;
+            width: 100%;
+            height: auto;
+        }
+        .footer-content {
+            padding: 0.5rem 0;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            font-size: 0.9rem;
+            color: var(--primary-color); 
+            margin-bottom: 25px;
+        }
+        .breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        .breadcrumb span.current {
+            font-weight: 600;
+        }
+
+        /* ================================================= */
+        /* 3. FORM CARD & CONTROLS */
+        /* ================================================= */
+        .form-card {
+            background-color: white;
+            border: 1px solid #c7d2fe; 
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .form-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e7ff; 
+            color: var(--primary-color);
+        }
+        
+        .form-header h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+        
+        .form-control, .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #93c5fd; 
+            border-radius: 8px;
+            box-sizing: border-box;
+            background-color: #f7f9fc; 
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+        .form-select {
+            appearance: none; 
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%233782f5'%3e%3cpath d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.7em top 50%;
+            background-size: 0.65em auto;
+        }
+        
+        /* Học kỳ Buttons */
+        .period-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .period-buttons button {
+            padding: 8px 15px;
+            border: 1px solid var(--primary-color);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s, color 0.3s;
+            background-color: white;
+            color: var(--primary-color);
+        }
+        .period-buttons .active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            padding-top: 25px;
+        }
+
+        .action-buttons button {
+            padding: 15px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex: 1;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 8px rgba(55, 130, 245, 0.3);
+        }
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+            box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+        }
+
+        /* ================================================= */
+        /* 4. PREVIEW SECTION STYLES (Sửa lỗi mất CSS) */
+        /* ================================================= */
+
+        .preview-card {
+            background-color: white;
+            border: 1px solid var(--primary-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .preview-header {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary-color);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .stat-box {
+            border: 1px solid var(--primary-color);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .stat-box i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-box .count {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        .stat-box .label {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+        }
+
+        /* Màu icon stats */
+        .icon-users { color: var(--primary-color); }
+        .icon-dollar { color: var(--success-color); }
+        .icon-alert { color: var(--danger-color); }
+        .icon-activity { color: #8b5cf6; } /* Purple */
+        .text-success { color: var(--success-color); }
+        .text-danger { color: var(--danger-color); }
+
+        /* Alert Exception */
+        .alert-exception {
+            background-color: #fffbeb; 
+            border-left: 4px solid #fbbf24; 
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .alert-exception .title {
+            font-weight: 700;
+            color: #b45309; 
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        /* ================================================= */
+        /* 5. MEDIA QUERIES (RESPONSIVE LAYOUT) */
+        /* ================================================= */
+
+        @media (max-width: 1023px) {
+            .header-top {
+                padding: 0.8rem 20px;
+            }
+            .container {
+                padding: 15px;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 767px) {
+            .header-top {
+                padding: 0.8rem 15px;
+            }
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .header-logo-icon {
+                width: 45px;
+                height: 45px;
+            }
+            .header-logo-icon i {
+                font-size: 1.5rem;
+            }
+            .header-logo h1 {
+                font-size: 1.4rem;
+            }
+            .header-logo p {
+                font-size: 0.75rem;
+            }
+            
+            .header-user {
+                flex-direction: column;
+                gap: 8px;
+                width: 100%;
+                align-items: flex-start;
+            }
+            .header-user span {
+                display: none; 
+            }
+            .header-user button {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .form-card, .preview-card, .alert-exception {
+                padding: 20px 15px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .action-buttons button {
+                width: 100%;
+            }
+            
+            .period-buttons {
+                flex-wrap: wrap; 
+            }
+            .period-buttons button {
+                flex-grow: 1; 
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header-top">
+        <div class="container header-content">
+            <div class="header-logo">
+                <div class="header-logo-icon">
+                    <i class="fa-solid fa-file-lines"></i>
+                </div>
+                <div>
+                    <h1>Lập Báo Cáo Thống Kê</h1>
+                    <p>Đoàn Khoa - Trường ĐHSPKT</p>
+                </div>
+            </div>
+            <div class="header-user">
+                <span class="text-sm">👤 Bí thư Đoàn khoa CNS</span>
+                <button>Đăng xuất</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="breadcrumb">
+            <a href="#">Trang chủ</a>
+            <span class="mx-2">/</span>
+            <span class="current">Báo cáo thống kê</span>
+        </div>
+
+        <div class="form-card">
+            <div class="form-header">
+                <i class="fa-solid fa-file-lines fa-2x"></i>
+                <div>
+                    <h2>Tạo Báo Cáo Mới</h2>
+                    <p style="color: var(--text-gray); margin: 0; font-size: 0.9rem;">Chọn loại báo cáo và điều kiện lọc dữ liệu</p>
+                </div>
+            </div>
+          
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Loại báo cáo <span style="color: var(--danger-color);">*</span></label>
+                    <select id="reportType" class="form-select">
+                        <option value="">-- Chọn loại báo cáo --</option>
+                        <option value="doan-phi" selected>📊 Báo cáo đoàn phí</option>
+                        <option value="hoat-dong">🎯 Báo cáo hoạt động</option>
+                        <option value="tong-hop">📈 Báo cáo tổng hợp</option>
+                        <option value="diem-ren-luyen">⭐ Báo cáo điểm rèn luyện</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Khoa</label>
+                    <select id="khoa" class="form-select" disabled>
+                        <option value="cntt">Công nghệ Thông tin</option>
+                    </select>
+                    <p class="note">* Chỉ xem báo cáo của khoa mình</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Từ ngày <span style="color: var(--danger-color);">*</span></label>
+                    <input type="date" id="startDate" class="form-control" value="2024-01-01">
+                </div>
+                
+                <div class="form-group">
+                    <label>Đến ngày <span style="color: var(--danger-color);">*</span></label>
+                    <input type="date" id="endDate" class="form-control" value="2024-12-31">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Học kỳ (tùy chọn)</label>
+                <div class="period-buttons">
+                    <button class="active" data-period="HK1-2024">HK1-2024</button>
+                    <button class="inactive" data-period="HK2-2024">HK2-2024</button>
+                    <button class="inactive" data-period="Cả năm 2024">Cả năm 2024</button>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button id="createReportBtn" class="btn-primary">
+                    <i class="fa-solid fa-file-text"></i>
+                    Tạo Báo Cáo
+                </button>
+                
+                <button id="exportExcelBtn" class="btn-success" style="display: none;">
+                    <i class="fa-solid fa-download"></i>
+                    Xuất File Excel
+                </button>
+            </div>
+        </div>
+
+        <div id="previewSection" class="preview-card" style="display: none;">
+            <h3 class="preview-header">
+                <i class="fa-solid fa-chart-line"></i>
+                Preview Báo Cáo
+            </h3>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <i class="fa-solid fa-users icon-users"></i>
+                    <p class="count">150</p>
+                    <p class="label">Tổng đoàn viên</p>
+                </div>
+                <div class="stat-box">
+                    <i class="fa-solid fa-dollar-sign icon-dollar"></i>
+                    <p class="count text-success">120</p>
+                    <p class="label">Đã đóng phí</p>
+                </div>
+                <div class="stat-box">
+                    <i class="fa-solid fa-triangle-exclamation icon-alert"></i>
+                    <p class="count text-danger">30</p>
+                    <p class="label">Chưa đóng phí</p>
+                </div>
+                <div class="stat-box">
+                    <i class="fa-solid fa-bolt icon-activity"></i>
+                    <p class="count" style="color: #8b5cf6;">12</p>
+                    <p class="label">Hoạt động đã tổ chức</p>
+                </div>
+            </div>
+        </div>
+
+        
+    </main>
+
+    <footer class="footer">
+        <div class="container text-center footer-content">
+            <p class="text-sm">© 2025 Hệ thống Quản lý Đoàn viên - Trường ĐHSPKT | Nhóm 37</p>
+            <p style="font-size: 1rem; margin-top: -12px;">Use Case: Lập báo cáo thống kê, phiếu thu đoàn phí, hoạt động của khoa</p>
+        </div>
+    </footer>
+
+    <script>
+        // 💡 MÔ PHỎNG REACT: Initial State
+        let reportFilters = { 
+            type: 'doan-phi', 
+            khoa: 'cntt', 
+            startDate: '2024-01-01', 
+            endDate: '2024-12-31',
+            period: 'HK1-2024'
+        };
+        // 💡 MÔ PHỎNG REACT: const [showPreview, setShowPreview] = useState(false);
+        let showPreview = false;
+
+        // Elements (Refs)
+        const elements = {
+            reportType: document.getElementById('reportType'),
+            startDate: document.getElementById('startDate'),
+            endDate: document.getElementById('endDate'),
+            createReportBtn: document.getElementById('createReportBtn'),
+            exportExcelBtn: document.getElementById('exportExcelBtn'),
+            previewSection: document.getElementById('previewSection'),
+            periodButtons: document.querySelectorAll('.period-buttons button')
+        };
+
+        // 💡 MÔ PHỎNG REACT: Hàm cập nhật UI (Re-render)
+        function updateUI() {
+            // Cập nhật giá trị inputs dựa trên reportFilters
+            elements.reportType.value = reportFilters.type;
+            elements.startDate.value = reportFilters.startDate;
+            elements.endDate.value = reportFilters.endDate;
+
+            // Conditional Rendering cho Preview Section và Export Button
+            elements.previewSection.style.display = showPreview ? 'block' : 'none';
+            // Sử dụng display:flex cho nút Export để nó responsive
+            elements.exportExcelBtn.style.display = showPreview ? 'flex' : 'none';
+
+            // Cập nhật style cho Học kỳ
+            elements.periodButtons.forEach(btn => {
+                const period = btn.getAttribute('data-period');
+                if (period === reportFilters.period) {
+                    btn.className = 'active';
+                } else {
+                    btn.className = 'inactive';
+                }
+            });
+        }
+
+        // 💡 MÔ PHỎNG REACT: Hàm xử lý tạo báo cáo (Handler)
+        function handleCreateReport() {
+            // Lấy giá trị hiện tại từ UI (Mô phỏng cập nhật state trước khi hành động)
+            reportFilters.type = elements.reportType.value;
+            reportFilters.startDate = elements.startDate.value;
+            reportFilters.endDate = elements.endDate.value;
+
+            // Validation
+            if (!reportFilters.type) {
+                alert('❌ Lỗi: Vui lòng chọn loại báo cáo!');
+                return;
+            }
+            if (!reportFilters.startDate || !reportFilters.endDate) {
+                alert('❌ Lỗi: Vui lòng chọn khoảng thời gian!');
+                return;
+            }
+            
+            // Xử lý logic thành công
+            showPreview = true; // setShowPreview(true)
+            alert('✅ Đang tạo báo cáo...');
+
+            updateUI(); // Gọi re-render
+        }
+
+        // 💡 MÔ PHỎNG REACT: Hàm xử lý chọn Học kỳ (Handler)
+        function handlePeriodSelect(event) {
+            const period = event.target.getAttribute('data-period');
+            reportFilters.period = period; // Cập nhật state
+            
+            // Tùy chọn: Thay đổi ngày tương ứng với Học kỳ (Mô phỏng logic phức tạp hơn)
+            if (period === 'HK1-2024') {
+                reportFilters.startDate = '2024-09-01';
+                reportFilters.endDate = '2025-01-15';
+            } else if (period === 'HK2-2024') {
+                reportFilters.startDate = '2025-02-15';
+                reportFilters.endDate = '2025-06-30';
+            } else if (period === 'Cả năm 2024') {
+                reportFilters.startDate = '2024-01-01';
+                reportFilters.endDate = '2024-12-31';
+            }
+            
+            // Ẩn preview khi thay đổi tiêu chí
+            showPreview = false;
+
+            updateUI(); // Gọi re-render
+        }
+
+        // 💡 MÔ PHỎNG REACT: ComponentDidMount (Gắn sự kiện)
+        function mountBaoCaoThongKe() {
+            elements.createReportBtn.addEventListener('click', handleCreateReport);
+            
+            elements.periodButtons.forEach(btn => {
+                btn.addEventListener('click', handlePeriodSelect);
+            });
+            
+            // Lắng nghe sự thay đổi của Select và Date Input để cập nhật Filters
+            elements.reportType.addEventListener('change', (e) => {
+                reportFilters.type = e.target.value;
+                showPreview = false; // Ẩn preview khi thay đổi loại báo cáo
+                updateUI();
+            });
+             elements.startDate.addEventListener('change', (e) => {
+                reportFilters.startDate = e.target.value;
+                showPreview = false; // Ẩn preview khi thay đổi ngày
+                updateUI();
+            });
+             elements.endDate.addEventListener('change', (e) => {
+                reportFilters.endDate = e.target.value;
+                showPreview = false; // Ẩn preview khi thay đổi ngày
+                updateUI();
+            });
+
+            // Khởi tạo UI ban đầu
+            updateUI();
+        }
+
+        mountBaoCaoThongKe();
+    </script>
+</body>
+</html>
