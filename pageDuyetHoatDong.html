@@ -421,24 +421,38 @@
 
     <script>
         // 💡 CHÚ THÍCH REACT: Đây là object mô phỏng React State
-      let state = {
+        let state = {
           activeTab: 'khoa', // activeTab
           activities: [ // activities
-              // Hoạt động đang chờ duyệt (pending) - Cần sửa lại cho đúng logic mới
-              { id: 1, name: 'Hội thảo Khởi nghiệp 2024', type: 'khoa', khoa: 'CNTT', date: '2025-11-15', time: '14:00 - 16:00', location: 'Hội trường B', status: 'pending', participants: 25, maxParticipants: 50, organizer: 'Khoa Công Nghệ Số', description: 'Hội thảo chia sẻ kinh nghiệm khởi nghiệp cho sinh viên' },
-              // Hoạt động ĐÃ được duyệt (approved) - Chuyển sang giai đoạn quản lý sinh viên
-              { id: 2, name: 'Chương trình Hiến máu nhân đạo', type: 'truong', khoa: 'Đoàn trường', date: '2025-11-20', time: '08:00 - 12:00', location: 'Sảnh A', status: 'approved', participants: 120, maxParticipants: 200, organizer: 'Đoàn trường ĐHSPKT', description: 'Chương trình hiến máu tình nguyện' },
-              { id: 3, name: 'Ngày hội Việc làm - Job Fair', type: 'khoa', khoa: 'CNTT', date: '2025-11-25', time: '09:00 - 17:00', location: 'Sảnh A', status: 'approved', participants: 15, maxParticipants: 100, organizer: 'Khoa Công Nghệ Số', description: 'Kết nối sinh viên với doanh nghiệp' }, 
-              // Hoạt động đã Hủy hoạt động (để demo)
-              { id: 4, name: 'Giải bóng đá mini', type: 'khoa', khoa: 'CNTT', date: '2025-12-01', time: '16:00', location: 'Sân vận động', status: 'rejected', participants: 30, maxParticipants: 30, organizer: 'Khoa Công Nghệ Số', description: 'Giải đấu giao hữu' }
+              { id: 1, name: 'Hội thảo Khởi nghiệp 2024', type: 'khoa', khoa: 'CNTT', date: '2025-11-15', time: '14:00 - 16:00', location: 'Hội trường B', status: 'pending', participants: 25, maxParticipants: 50, organizer: 'Khoa Công Nghệ Số', description: 'Hội thảo chia sẻ kinh nghiệm khởi nghiệp cho sinh viên', score: 3 },
+              { id: 2, name: 'Chương trình Hiến máu nhân đạo', type: 'truong', khoa: 'Đoàn trường', date: '2025-11-20', time: '08:00 - 12:00', location: 'Sảnh A', status: 'approved', participants: 120, maxParticipants: 200, organizer: 'Đoàn trường ĐHSPKT', description: 'Chương trình hiến máu tình nguyện', score: 1 },
+              { id: 3, name: 'Ngày hội Việc làm - Job Fair', type: 'khoa', khoa: 'CNTT', date: '2025-11-25', time: '09:00 - 17:00', location: 'Sảnh A', status: 'approved', participants: 15, maxParticipants: 100, organizer: 'Khoa Công Nghệ Số', description: 'Kết nối sinh viên với doanh nghiệp', score: 2 }, 
+              { id: 4, name: 'Giải bóng đá mini', type: 'khoa', khoa: 'CNTT', date: '2025-12-01', time: '16:00', location: 'Sân vận động', status: 'rejected', participants: 30, maxParticipants: 30, organizer: 'Khoa Công Nghệ Số', description: 'Giải đấu giao hữu', score: 1 },
+              { id: 5, name: 'Workshop Lập trình Python cơ bản', type: 'khoa', khoa: 'CNTT', date: '2025-12-10', time: '18:00 - 20:00', location: 'Phòng Lab 203', status: 'approved', participants: 5, maxParticipants: 40, organizer: 'CLB Lập trình', description: 'Nâng cao kiến thức lập trình Python cho người mới bắt đầu.', score: 3 },
+              { id: 6, name: 'Tọa đàm Văn hóa Doanh nghiệp', type: 'khoa', khoa: 'CNTT', date: '2025-12-15', time: '09:00 - 11:30', location: 'Phòng Hội thảo A', status: 'approved', participants: 8, maxParticipants: 60, organizer: 'Khoa Công Nghệ Số', description: 'Tìm hiểu về văn hóa, môi trường làm việc tại các công ty IT.', score: 2 },
+              { id: 7, name: 'Tham quan Công ty Công nghệ FPT', type: 'khoa', khoa: 'CNTT', date: '2026-01-05', time: '07:30', location: 'KCN Cao', status: 'pending', participants: 45, maxParticipants: 50, organizer: 'Phòng Quan hệ Doanh nghiệp', description: 'Chuyến đi thực tế tại các công ty công nghệ hàng đầu.', score: 5 },
+              { id: 8, name: 'Hội trại Kỹ năng Đoàn viên 2026', type: 'truong', khoa: 'Đoàn trường', date: '2026-01-15', time: 'Cả ngày', location: 'Khu du lịch Suối Tiên', status: 'approved', participants: 300, maxParticipants: 500, organizer: 'Đoàn trường ĐHSPKT', description: 'Rèn luyện kỹ năng mềm và tinh thần đồng đội.', score: 5 },
+              { id: 9, name: 'Hội thi Tiếng hát Sinh viên', type: 'truong', khoa: 'Đoàn trường', date: '2026-01-25', time: '19:00', location: 'Hội trường Lớn', status: 'pending', participants: 150, maxParticipants: 300, organizer: 'Đoàn trường ĐHSPKT', description: 'Sân chơi âm nhạc cho sinh viên toàn trường.', score: 3 },
+              { id: 10, name: 'Bảo vệ Môi trường - Vì một Việt Nam Xanh', type: 'khoa', khoa: 'CNTT', date: '2026-02-10', time: '07:00 - 11:00', location: 'Công viên A', status: 'pending', participants: 25, maxParticipants: 100, organizer: 'CLB Tình nguyện', description: 'Chương trình nhặt rác và trồng cây gây quỹ.', score: 5 }
           ],
           selectedActivity: null, 
           participantsList: [ // Mẫu, cần phải được lọc theo ActivityId thực tế
-              { id: 1, mssv: 'SV001', name: 'Nguyễn Văn A', class: '22IT1', status: 'pending', activityId: 1 },
-              { id: 2, mssv: 'SV002', name: 'Trần Thị B', class: '22IT2', status: 'pending', activityId: 3 }, 
-              { id: 3, mssv: 'SV003', name: 'Lê Văn C', class: '22IT1', status: 'pending', activityId: 2 }, // Hoạt động trường
-              { id: 4, mssv: 'SV004', name: 'Phạm D', class: '22IT1', status: 'pending', activityId: 3 }, 
-          ]
+              { id: 1, mssv: 'SV001', name: 'Nguyễn Văn A', class: '22IT1', status: 'pending', activityId: 1, proofUrl: 'https://storage.google.com/proofs/hthk_sv001.jpg' },
+              { id: 2, mssv: 'SV002', name: 'Trần Thị B', class: '22IT2', status: 'pending', activityId: 3, proofUrl: 'https://storage.google.com/proofs/jf_sv002.pdf' }, 
+              { id: 3, mssv: 'SV003', name: 'Lê Văn C', class: '22IT1', status: 'pending', activityId: 2, proofUrl: '' }, // Hoạt động trường không cần minh chứng trong mẫu
+              { id: 4, mssv: 'SV004', name: 'Phạm D', class: '22IT1', status: 'pending', activityId: 3, proofUrl: 'https://storage.google.com/proofs/jf_sv004.jpg' }, 
+              { id: 5, mssv: 'SV005', name: 'Nguyễn Thị E', class: '22IT3', status: 'pending', activityId: 5, proofUrl: 'https://storage.google.com/proofs/py_sv005.png' }, 
+              { id: 6, mssv: 'SV006', name: 'Trần Văn F', class: '22IT2', status: 'pending', activityId: 5, proofUrl: '' }, // Không có minh chứng
+              { id: 7, mssv: 'SV007', name: 'Phạm Thị G', class: '22IT3', status: 'pending', activityId: 6, proofUrl: 'https://storage.google.com/proofs/vn_sv007.pdf' }, 
+              { id: 8, mssv: 'SV008', name: 'Lê Hữu H', class: '22IT4', status: 'pending', activityId: 6, proofUrl: '' }, 
+              { id: 9, mssv: 'SV009', name: 'Huỳnh T', class: '22IT1', status: 'pending', activityId: 6, proofUrl: 'https://storage.google.com/proofs/vn_sv009.jpg' }, 
+              { id: 10, mssv: 'SV010', name: 'Đoàn X', class: '23IT1', status: 'pending', activityId: 7, proofUrl: 'https://storage.google.com/proofs/fpt_sv010.jpg' }, 
+              { id: 11, mssv: 'SV011', name: 'Vũ Y', class: '23IT2', status: 'pending', activityId: 7, proofUrl: '' }, 
+              { id: 12, mssv: 'SV012', name: 'Trần A', class: '23IT1', status: 'pending', activityId: 8, proofUrl: '' }, 
+              { id: 13, mssv: 'SV013', name: 'Nguyễn B', class: '22IT1', status: 'pending', activityId: 10, proofUrl: 'https://storage.google.com/proofs/mt_sv013.jpg' }
+          ],
+          // Mô phỏng điểm tích lũy tổng của sinh viên
+          studentScores: { 'SV002': 10, 'SV004': 5 }
       };
 
       // Elements (Refs)
@@ -537,6 +551,10 @@
                               <i class="fa-solid fa-award"></i>
                               <span><b>Đơn vị:</b> ${activity.organizer}</span>
                           </div>
+                          <div class="item-detail-box">
+                              <i class="fa-solid fa-star"></i>
+                              <span><b>Điểm tích lũy:</b> ${activity.score} điểm</span>
+                          </div>
                       </div>
 
                       <div class="item-actions">
@@ -566,12 +584,14 @@
           // Quyền duyệt: Chỉ có quyền nếu là hoạt động của khoa và ĐÃ approved
           const canApproveParticipant = activity.type === 'khoa' && activity.status === 'approved';
           const isTruongActivity = activity.type === 'truong';
+          
+          const scoreDisplay = `<span style="font-size: 1rem; font-weight: 600; color: var(--success-color);">(${activity.score} điểm tích lũy)</span>`;
 
           const tableRows = participantsInActivity.map((p, i) => {
               let pStatusClass, pStatusText;
               switch (p.status) {
                   case 'approved': pStatusClass = 'status-approved'; pStatusText = '✓ Đã duyệt'; break;
-                  case 'rejected': pStatusClass = 'status-rejected'; pStatusText = '✗ Đã hủy hoạt động'; break;
+                  case 'rejected': pStatusClass = 'status-rejected'; pStatusText = '✗ Đã từ chối'; break;
                   default: pStatusClass = 'status-pending'; pStatusText = '⏳ Chờ duyệt'; break;
               }
 
@@ -580,13 +600,18 @@
                   // Hiện nút duyệt nếu có quyền và trạng thái đang chờ
                   actionCell = `
                       <div class="action-group" style="display:flex; gap:8px;">
-                          <button class="btn-approve-sv" onclick="handleApproveParticipant(${p.id})">Duyệt</button>
-                          <button class="btn-reject-sv" onclick="handleRejectParticipant(${p.id})">Từ chối</button>
+                          <button class="btn-approve-sv" style="padding: 5px 10px; background-color: var(--success-color); color: white; border-radius: 6px; border: none; cursor: pointer; font-size: 0.9rem;" onclick="handleApproveParticipant(${p.id})">Duyệt</button>
+                          <button class="btn-reject-sv" style="padding: 5px 10px; background-color: var(--danger-color); color: white; border-radius: 6px; border: none; cursor: pointer; font-size: 0.9rem;" onclick="handleRejectParticipant(${p.id})">Từ chối</button>
                       </div>`;
               } else if (isTruongActivity) {
                   // HOẠT ĐỘNG TRƯỜNG: KHÔNG HIỆN NÚT DUYỆT SINH VIÊN
                   actionCell = 'Chỉ xem'; 
               }
+              
+              // Minh chứng
+              let proofCell = p.proofUrl ? 
+                  `<a href="${p.proofUrl}" target="_blank" style="color: var(--primary-color); text-decoration: underline;">Xem (Ảnh/File)</a>` 
+                  : '<span style="color: var(--danger-color); font-weight: 600;">Không có</span>';
 
               return `
                   <tr style="border-top: 1px solid #e0e7ff;">
@@ -594,7 +619,7 @@
                       <td class="p-2 font-semibold">${p.mssv}</td>
                       <td class="p-2">${p.name}</td>
                       <td class="p-2">${p.class}</td>
-                      <td class="p-2">
+                      <td class="p-2">${proofCell}</td> <td class="p-2">
                           <span class="item-status ${pStatusClass}" style="padding: 2px 8px;">${pStatusText}</span>
                       </td>
                       <td class="p-2">${actionCell}</td>
@@ -614,21 +639,21 @@
 
           elements.detailView.innerHTML = `
               <div class="detail-view-header">
-                  <h3>${activity.name}</h3>
-                  <button onclick="handleCloseDetail()">
+                  <h3>${activity.name} ${scoreDisplay}</h3>
+                  <button onclick="handleCloseDetail()" style="background: none; border: none; float: right; margin-top: -30px; cursor: pointer; color: var(--text-gray);">
                       <i class="fa-solid fa-xmark fa-lg"></i>
                   </button>
               </div>
 
               <div style="max-height: 400px; overflow-y: auto;">
-                  <table class="participants-table">
+                  <table class="participants-table" style="width: 100%;">
                       <thead>
                           <tr>
                               <th style="padding: 10px;">STT</th>
                               <th style="padding: 10px;">MSSV</th>
                               <th style="padding: 10px;">Họ tên</th>
                               <th style="padding: 10px;">Lớp</th>
-                              <th style="padding: 10px;">Trạng thái</th>
+                              <th style="padding: 10px;">Minh chứng</th> <th style="padding: 10px;">Trạng thái</th>
                               <th style="padding: 10px;">Thao tác</th>
                           </tr>
                       </thead>
@@ -666,35 +691,44 @@
           updateUI();
       }
 
-      // 🔴 LOGIC DUYỆT TOÀN BỘ SINH VIÊN
-function handleApproveActivity(activityId) {
-          // Chỉ hoạt động khi hoạt động ĐÃ được duyệt
-          if (state.activities.find(a => a.id === activityId).status !== 'approved') {
+      // 🔴 LOGIC DUYỆT TOÀN BỘ SINH VIÊN (ĐÃ BỔ SUNG LOGIC CỘNG ĐIỂM)
+      function handleApproveActivity(activityId) {
+          const activity = state.activities.find(a => a.id === activityId);
+        
+          if (activity.status !== 'approved') {
               alert('❌ Hoạt động này chưa được duyệt bởi cấp trên!');
               return;
           }
 
-          // Lọc sinh viên thuộc hoạt động hiện tại
           const participantsInActivity = state.participantsList.filter(p => p.activityId === activityId);
+          const scoreToAdd = activity.score || 0;
 
           // 1. Lấy ra ID của TẤT CẢ sinh viên đang 'pending' trong hoạt động này
           const pendingParticipantIds = participantsInActivity
               .filter(p => p.status === 'pending')
               .map(p => p.id);
-              
+            
           if (pendingParticipantIds.length === 0) {
               alert('🔔 Không có sinh viên nào đang chờ duyệt!');
               return;
           }
 
-          // 2. Cập nhật trạng thái của các sinh viên đó thành 'approved'
-          state.participantsList = state.participantsList.map(p => 
-              pendingParticipantIds.includes(p.id) ? {...p, status: 'approved'} : p
-          );
-          
+          let totalScoreAdded = 0;
+        
+          // 2. Cập nhật trạng thái và Cộng điểm
+          state.participantsList = state.participantsList.map(p => {
+              if (pendingParticipantIds.includes(p.id)) {
+                  // Cộng điểm mô phỏng
+                  state.studentScores[p.mssv] = (state.studentScores[p.mssv] || 0) + scoreToAdd;
+                  totalScoreAdded++;
+                  return {...p, status: 'approved'}; 
+              }
+              return p;
+          });
+        
           // 3. Hiện alert thành công
-          alert('✅ Đã duyệt toàn bộ sinh viên thành công!');
-          
+          alert(`✅ Đã duyệt toàn bộ ${totalScoreAdded} sinh viên thành công và cộng mỗi sinh viên ${scoreToAdd} điểm!`);
+        
           // 4. Gọi updateUI() để re-render màn hình chi tiết (KHÔNG ĐÓNG MODAL)
           updateUI(); 
       }
@@ -709,10 +743,27 @@ function handleApproveActivity(activityId) {
           }
       }
 
+      // 🔴 LOGIC DUYỆT CÁ NHÂN (ĐÃ BỔ SUNG LOGIC CỘNG ĐIỂM)
       function handleApproveParticipant(participantId) {
+          const participant = state.participantsList.find(p => p.id === participantId);
+          if (!participant || participant.status !== 'pending') { // Chỉ duyệt khi đang pending
+              alert('🔔 Sinh viên này đã được duyệt/từ chối trước đó.');
+              return;
+          }
+        
+          const activity = state.activities.find(a => a.id === participant.activityId);
+          const scoreToAdd = activity.score || 0; 
+
+          // 1. Logic Cộng điểm: Cập nhật điểm tích lũy tổng của sinh viên (Mô phỏng)
+          const mssv = participant.mssv;
+          state.studentScores[mssv] = (state.studentScores[mssv] || 0) + scoreToAdd;
+          
+          // 2. Cập nhật trạng thái sinh viên
           state.participantsList = state.participantsList.map(p =>
               p.id === participantId ? {...p, status: 'approved'} : p
           );
+
+          alert(`✅ Đã duyệt và cộng ${scoreToAdd} điểm cho sinh viên ${participant.name} (${mssv})! Tổng điểm hiện tại (mô phỏng): ${state.studentScores[mssv]}`);
           updateUI();
       }
 
@@ -720,6 +771,7 @@ function handleApproveActivity(activityId) {
           state.participantsList = state.participantsList.map(p =>
               p.id === participantId ? {...p, status: 'rejected'} : p
           );
+          alert('❌ Đã từ chối sinh viên này.');
           updateUI();
       }
 
