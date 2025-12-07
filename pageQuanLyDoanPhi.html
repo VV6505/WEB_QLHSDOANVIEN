@@ -1,921 +1,826 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Đoàn Phí</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý Đoàn Phí - Demo Tương Tác</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background-color: #ffffff;
-            color: #3782f5;
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-
-        /* Header */
-        header {
-            background: linear-gradient(135deg, #3782f5 0%, #2563eb 100%);
-            color: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 1rem;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .logo-circle {
-            width: 56px;
-            height: 56px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-
-        .header-title h1 {
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 0.25rem;
-        }
-
-        .header-title p {
-            font-size: 0.875rem;
-            opacity: 0.9;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .btn {
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-logout {
-            background: rgb(255, 255, 255);
-            color: #3782f5;
-        }
-
-        .btn-logout:hover {
-            background: rgb(255, 255, 255);
-        }
-
-        /* Main Content */
-        main {
-            padding: 2rem 1rem;
-        }
-
-        .breadcrumb {
-            margin-top: 8px;
-            margin-bottom: 1.5rem;
-            font-size: 0.875rem;
-            color: #666;
-        }
-
-        .breadcrumb span {
-            cursor: pointer;
-        }
-
-        .breadcrumb span:hover {
-            color: #3782f5;
-        }
-
-        /* Stats Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #3782f5 0%, #2563eb 100%);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px rgba(55, 130, 245, 0.2);
-        }
-
-        .stat-card.green {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        }
-
-        .stat-card.red {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        }
-
-        .stat-card.purple {
-            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-        }
-
-        .stat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-icon {
-            font-size: 2.5rem;
-            opacity: 0.8;
-        }
-
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: bold;
-        }
-
-        .stat-label {
-            font-size: 0.875rem;
-            font-weight: 600;
-            opacity: 0.9;
-        }
-
-        .stat-sub {
-            font-size: 0.75rem;
-            opacity: 0.75;
-            margin-top: 0.25rem;
-        }
-
-        /* Main Card */
-        .card {
-            background: white;
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid #e5e7eb;
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #e5e7eb;
-            margin-bottom: 1.5rem;
-        }
-
-        .card-icon {
-            font-size: 2rem;
-            color: #3782f5;
-        }
-
-        .card-title h2 {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #1f2937;
-            margin-bottom: 0.25rem;
-        }
-
-        .card-title p {
-            font-size: 0.875rem;
-            color: #6b7280;
-        }
-
-        /* Search and Filter */
-        .search-filter {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .search-box {
-            flex: 1;
-            min-width: 300px;
-            position: relative;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 0.75rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #9ca3af;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 0.75rem 0.75rem 0.75rem 2.5rem;
-            border: 2px solid #d1d5db;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            transition: all 0.2s;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #3782f5;
-            box-shadow: 0 0 0 3px rgba(55, 130, 245, 0.1);
-        }
-
-        .filter-group {
-            display: flex;
-            gap: 0.75rem;
-        }
-
-        select {
-            padding: 0.75rem 1rem;
-            border: 2px solid #d1d5db;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        select:focus {
-            outline: none;
-            border-color: #3782f5;
-            box-shadow: 0 0 0 3px rgba(55, 130, 245, 0.1);
-        }
-
-        .btn-primary {
-            background: #3782f5;
-            color: white;
-            font-weight: 600;
-        }
-
-        .btn-primary:hover {
-            background: #2563eb;
-        }
-
-        /* Semester Filter */
-        .semester-filter {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .semester-buttons {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .btn-semester {
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-semester.active {
-            background: #dbeafe;
-            color: #3782f5;
-        }
-
-        .btn-semester:not(.active) {
-            background: #f3f4f6;
-            color: #374151;
-        }
-
-        .btn-semester:not(.active):hover {
-            background: #e5e7eb;
-        }
-
-        /* Table */
-        .table-container {
-            overflow-x: auto;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        thead {
-            background: #f9fafb;
-        }
-
-        th {
-            padding: 1rem;
-            text-align: left;
-            font-weight: 600;
-            color: #374151;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        td {
-            padding: 1rem;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        tbody tr:hover {
-            background: #f0f9ff;
-        }
-
-        tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
-
-        .status-paid {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .status-unpaid {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .btn-confirm {
-            background: #10b981;
-            color: white;
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
-
-        .btn-confirm:hover {
-            background: #059669;
-        }
-
-        .text-success {
-            color: #10b981;
-            font-size: 0.875rem;
-        }
-
-        .text-primary {
-            color: #3782f5;
-            font-weight: 600;
-        }
-
-        /* Summary */
-        .summary {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.875rem;
-            color: #6b7280;
-            margin-top: 1rem;
-        }
-
-        /* Action Buttons */
-        .action-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .btn-action {
-            padding: 0.75rem 1.5rem;
-            font-weight: 600;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-purple {
-            background: #8b5cf6;
-            color: white;
-        }
-
-        .btn-purple:hover {
-            background: #7c3aed;
-        }
-
-        .btn-blue {
-            background: #3782f5;
-            color: white;
-        }
-
-        .btn-blue:hover {
-            background: #2563eb;
-        }
-
-        .btn-gray {
-            background: #6b7280;
-            color: white;
-        }
-
-        .btn-gray:hover {
-            background: #4b5563;
-        }
-
-        /* Alert */
-        .alert {
-            background: #fef3c7;
-            border-left: 4px solid #f59e0b;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .alert-content {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .alert-icon {
-            color: #d97706;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-
-        .alert-body h4 {
-            color: #92400e;
-            font-weight: bold;
-            font-size: 1.125rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .alert-body {
-            font-size: 0.875rem;
-            color: #78350f;
-        }
-
-        .alert-body ul {
-            margin-left: 1.25rem;
-            margin-top: 0.5rem;
-        }
-
-        .alert-body li {
-            margin-bottom: 0.25rem;
-        }
-
-        .alert-success {
-            color: #065f46;
-            font-weight: 600;
-        }
-
-        /* Footer */
-        footer {
-            background: #3782f5;
-            color: white;
-            margin-top: 2rem;
-        }
-
-        .footer-content {
-            text-align: center;
-            padding: 1rem 1rem;
-        }
-
-        .footer-content p {
-            font-size: 0.875rem;
-        }
-
-        .footer-content p:last-child {
-            font-size: 1rem;
-            color: #ffffff;
-            margin-top: 0.2rem;
-        }
-
-        /* Checkbox */
-        input[type="checkbox"] {
-            width: 1.25rem;
-            height: 1.25rem;
-            cursor: pointer;
-        }
-
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .search-filter {
-                flex-direction: column;
-            }
-
-            .search-box {
-                min-width: 100%;
-            }
-
-            .table-container {
-                font-size: 0.875rem;
-            }
-
-            th, td {
-                padding: 0.5rem;
-            }
-        }
+      :root {
+        --primary-blue: #436ef3;
+        --bg-light: #f4f7fa;
+        --text-dark: #333;
+        --text-gray: #666;
+        --success: #28c76f;
+        --danger: #ea5455;
+        --card-purple: #7367f0;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: var(--bg-light);
+        padding-bottom: 90px;
+      }
+
+      /* HEADER */
+      .header {
+        background-color: var(--primary-blue);
+        color: white;
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      .header-title h2 {
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      .btn-logout {
+        background: white;
+        color: var(--primary-blue);
+        border: none;
+        padding: 5px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      /* CONTAINER */
+      .container {
+        max-width: 1200px;
+        margin: 25px auto;
+        padding: 0 15px;
+      }
+
+      /* DASHBOARD CARDS */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin-bottom: 25px;
+      }
+      .stat-card {
+        padding: 20px;
+        border-radius: 12px;
+        color: white;
+        min-height: 120px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+      }
+      .stat-card:hover {
+        transform: translateY(-5px);
+      }
+      .bg-blue {
+        background: linear-gradient(45deg, #436ef3, #5a80f5);
+      }
+      .bg-green {
+        background: linear-gradient(45deg, #28c76f, #48da89);
+      }
+      .bg-red {
+        background: linear-gradient(45deg, #ea5455, #ff7677);
+      }
+      .bg-purple {
+        background: linear-gradient(45deg, #7367f0, #938af5);
+      }
+
+      .stat-value {
+        font-size: 32px;
+        font-weight: bold;
+        text-align: right;
+      }
+      .stat-label {
+        font-size: 14px;
+        opacity: 0.9;
+      }
+
+      /* CONTENT BOX */
+      .content-box {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      }
+      .box-header {
+        margin-bottom: 25px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 15px;
+      }
+      .box-title {
+        font-size: 22px;
+        font-weight: bold;
+        color: var(--text-dark);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      /* FILTERS */
+      .filter-bar {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .search-input {
+        flex: 2;
+        padding: 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        min-width: 200px;
+        outline: none;
+      }
+      .select-input {
+        flex: 1;
+        padding: 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        outline: none;
+        cursor: pointer;
+        min-width: 150px;
+        background-color: white;
+      }
+      .select-input:focus,
+      .search-input:focus {
+        border-color: var(--primary-blue);
+        box-shadow: 0 0 0 3px rgba(67, 110, 243, 0.1);
+      }
+      .btn-filter {
+        background: var(--primary-blue);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .btn-filter:hover {
+        background-color: #325ad8;
+      }
+
+      .year-tabs {
+        margin-bottom: 20px;
+        display: flex;
+        gap: 10px;
+      }
+      .year-badge {
+        background: #eef2fe;
+        color: var(--primary-blue);
+        padding: 8px 20px;
+        border-radius: 30px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s;
+        border: 1px solid transparent;
+      }
+      .year-badge.active {
+        background: var(--primary-blue);
+        color: white;
+        box-shadow: 0 4px 10px rgba(67, 110, 243, 0.3);
+      }
+
+      /* TABLE STYLES */
+      .table-responsive {
+        overflow-x: auto;
+        min-height: 300px;
+        max-height: 600px;
+      }
+      table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-top: 10px;
+      }
+      th {
+        text-align: left;
+        padding: 18px 15px;
+        background: #f8f9fa;
+        color: #555;
+        font-weight: 600;
+        border-bottom: 2px solid #eee;
+        white-space: nowrap;
+        position: sticky;
+        top: 0;
+        background: #f8f9fa;
+        z-index: 10;
+      }
+      td {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        color: var(--text-dark);
+        vertical-align: middle;
+      }
+      tr:hover td {
+        background-color: #fafbfc;
+      }
+
+      /* BADGES */
+      .badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .badge-success {
+        background: #dff7e9;
+        color: var(--success);
+      }
+      .badge-danger {
+        background: #fcecea;
+        color: var(--danger);
+      }
+      .badge-faculty {
+        background: #eee;
+        color: #555;
+        font-weight: 600;
+        border: 1px solid #ddd;
+      }
+
+      /* ACTION BUTTONS */
+      .btn-action {
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 13px;
+        cursor: pointer;
+        border: none;
+        font-weight: 600;
+        transition: 0.2s;
+      }
+      .btn-confirm {
+        background: white;
+        border: 1px solid var(--success);
+        color: var(--success);
+      }
+      .btn-confirm:hover {
+        background: var(--success);
+        color: white;
+      }
+
+      .btn-detail {
+        background: #e3e8fc;
+        color: var(--primary-blue);
+      }
+      .btn-detail:hover {
+        background: var(--primary-blue);
+        color: white;
+      }
+
+      .btn-back {
+        background: transparent;
+        border: none;
+        color: #666;
+        font-size: 16px;
+        cursor: pointer;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+      }
+      .btn-back:hover {
+        color: var(--primary-blue);
+      }
+
+      /* STICKY FOOTER */
+      .sticky-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: white;
+        padding: 15px 40px;
+        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        align-items: center;
+        z-index: 999;
+        border-top: 1px solid #eee;
+      }
+      .footer-left {
+        margin-right: auto;
+        font-size: 15px;
+        color: #555;
+      }
+      .footer-btn {
+        padding: 12px 24px;
+        border-radius: 8px;
+        border: none;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: 0.2s;
+      }
+      .footer-btn:active {
+        transform: scale(0.98);
+      }
+      .btn-purple {
+        background-color: var(--card-purple);
+      }
+      .btn-blue {
+        background-color: var(--primary-blue);
+      }
+      .btn-gray {
+        background-color: #6c757d;
+      }
+
+      .hidden {
+        display: none;
+      }
+      .file-link {
+        color: var(--primary-blue);
+        text-decoration: none;
+        font-weight: 500;
+      }
+      .file-link:hover {
+        text-decoration: underline;
+      }
+
+      .no-result {
+        text-align: center;
+        padding: 30px;
+        color: #888;
+        font-style: italic;
+      }
     </style>
-</head>
-<body>
-    <!-- Header -->
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="header-left">
-                    <div class="logo-circle">💰</div>
-                    <div class="header-title">
-                        <h1>Quản Lý Đoàn Phí</h1>
-                        <p>Đoàn Trường - Admin</p>
-                    </div>
-                </div>
-                <div class="header-right">
-                    <span style="font-size: 1rem;">👤 Admin - Ban Thường vụ</span>
-                    <button class="btn btn-logout">Đăng xuất</button>
-                </div>
-            </div>
-        </div>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-title">
+        <h2><i class="fas fa-coins"></i> Hệ Thống Quản Lý Đoàn Phí</h2>
+      </div>
+      <div class="user-info">
+        <span><i class="fas fa-user-circle"></i> Admin - Ban Thường vụ</span>
+        <button class="btn-logout">Đăng xuất</button>
+      </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="container">
-        <!-- Breadcrumb -->
-        <div class="breadcrumb">
-            <span>Trang chủ</span>
-            <span> / </span>
-            <span style="font-weight: 600; color: #1f2937;">Quản lý đoàn phí</span>
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card bg-blue">
+          <div><i class="fas fa-building"></i> Tổng chi đoàn</div>
+          <div class="stat-value" id="stat-total-class">0</div>
+          <div class="stat-label">Đang quản lý</div>
+        </div>
+        <div class="stat-card bg-green">
+          <div><i class="fas fa-check-circle"></i> Đã hoàn thành</div>
+          <div class="stat-value" id="stat-completed">0</div>
+          <div class="stat-label">Các chi đoàn đóng đủ</div>
+        </div>
+        <div class="stat-card bg-red">
+          <div><i class="fas fa-exclamation-triangle"></i> Chưa hoàn thành</div>
+          <div class="stat-value" id="stat-incomplete">0</div>
+          <div class="stat-label">Cần nhắc nhở</div>
+        </div>
+        <div class="stat-card bg-purple">
+          <div><i class="fas fa-wallet"></i> Tổng thu</div>
+          <div class="stat-value">38.5 Tr</div>
+          <div class="stat-label">VND (Năm học 2023-2024)</div>
+        </div>
+      </div>
+
+      <div class="content-box">
+        <div id="view-chidoan">
+          <div class="box-header">
+            <div class="box-title">
+              <i class="fas fa-list-ul"></i> Danh Sách Chi Đoàn - Tổng Hợp
+            </div>
+          </div>
+
+          <div class="year-tabs">
+            <span
+              style="
+                display: flex;
+                align-items: center;
+                margin-right: 10px;
+                font-weight: 600;
+              "
+              >Năm học:</span
+            >
+            <span class="year-badge active">2023-2024</span>
+            <span class="year-badge">2024-2025</span>
+            <span class="year-badge">2025-2026</span>
+          </div>
+
+          <div class="filter-bar">
+            <input
+              type="text"
+              id="search-text"
+              class="search-input"
+              placeholder="Tìm kiếm tên lớp..."
+              onkeyup="filterClasses()"
+            />
+            <select
+              id="filter-faculty"
+              class="select-input"
+              onchange="filterClasses()"
+            >
+              <option value="">-- Tất cả Khoa --</option>
+            </select>
+            <select
+              id="filter-status"
+              class="select-input"
+              onchange="filterClasses()"
+            >
+              <option value="">-- Tất cả trạng thái --</option>
+              <option value="1">Đã hoàn thành</option>
+              <option value="0">Chưa hoàn thành</option>
+            </select>
+            <button class="btn-filter" onclick="filterClasses()">
+              <i class="fas fa-filter"></i> Áp dụng
+            </button>
+          </div>
+
+          <div class="table-responsive">
+            <table id="table-classes">
+              <thead>
+                <tr>
+                  <th>STT</th>
+                  <th>Tên Chi Đoàn</th>
+                  <th>Khoa</th>
+                  <th>Sĩ số</th>
+                  <th>Đã thu</th>
+                  <th>Tiến độ</th>
+                  <th>Trạng thái</th>
+                  <th>Minh chứng</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-classes"></tbody>
+            </table>
+            <div id="no-result-msg" class="no-result hidden">
+              Không tìm thấy lớp nào phù hợp bộ lọc.
+            </div>
+          </div>
         </div>
 
-        <!-- Statistics Cards -->
-        <div class="stats-grid" id="statsGrid">
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div class="stat-icon">💰</div>
-                    <div class="stat-value" id="totalStudents">5</div>
-                </div>
-                <div class="stat-label">Tổng sinh viên</div>
+        <div id="view-sinhvien" class="hidden">
+          <button class="btn-back" onclick="backToClassList()">
+            <i class="fas fa-arrow-left"></i> Quay lại danh sách lớp
+          </button>
+
+          <div class="box-header">
+            <div class="box-title">
+              Chi tiết thu phí - Lớp
+              <span
+                id="current-class-name"
+                style="color: var(--primary-blue); margin-left: 8px"
+                >...</span
+              >
             </div>
-            
-            <div class="stat-card green">
-                <div class="stat-header">
-                    <div class="stat-icon">✓</div>
-                    <div class="stat-value" id="paidCount">2</div>
-                </div>
-                <div class="stat-label">Đã đóng đoàn phí</div>
-                <div class="stat-sub" id="paidPercent">40.0% tỷ lệ</div>
-            </div>
-            
-            <div class="stat-card red">
-                <div class="stat-header">
-                    <div class="stat-icon">⚠</div>
-                    <div class="stat-value" id="unpaidCount">3</div>
-                </div>
-                <div class="stat-label">Chưa đóng đoàn phí</div>
-                <div class="stat-sub" id="unpaidPercent">60.0% còn lại</div>
-            </div>
-            
-            <div class="stat-card purple">
-                <div class="stat-header">
-                    <div class="stat-icon">📈</div>
-                    <div class="stat-value" id="totalAmountM">0.1M</div>
-                </div>
-                <div class="stat-label">Tổng thu</div>
-                <div class="stat-sub" id="totalAmount">100,000đ</div>
-            </div>
+          </div>
+
+          <div class="filter-bar">
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Nhập MSSV hoặc tên sinh viên..."
+            />
+            <select class="select-input">
+              <option>Tất cả trạng thái</option>
+              <option>Đã đóng</option>
+              <option>Chưa đóng</option>
+            </select>
+            <button class="btn-filter">
+              <i class="fas fa-search"></i> Tìm kiếm
+            </button>
+          </div>
+
+          <div class="table-responsive">
+            <table id="table-students">
+              <thead>
+                <tr>
+                  <th><input type="checkbox" id="check-all" /></th>
+                  <th>MSSV</th>
+                  <th>Họ tên</th>
+                  <th>Ngày sinh</th>
+                  <th>Số tiền</th>
+                  <th>Trạng thái</th>
+                  <th>Ngày đóng</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-students"></tbody>
+            </table>
+          </div>
         </div>
+      </div>
+    </div>
 
-        <!-- Main Card -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-icon">💰</div>
-                <div class="card-title">
-                    <h2>Danh Sách Đóng Đoàn Phí</h2>
-                    <p>Ghi nhận, lập phiếu thu và thống kê</p>
-                </div>
-            </div>
-
-            <!-- Search and Filter -->
-            <div class="search-filter">
-                <div class="search-box">
-                    <span class="search-icon">🔍</span>
-                    <input 
-                        type="text" 
-                        class="search-input" 
-                        placeholder="Tìm kiếm theo MSSV hoặc tên sinh viên..."
-                        id="searchInput"
-                    />
-                </div>
-                
-                <div class="filter-group">
-                    <select id="filterStatus">
-                        <option value="all">Tất cả trạng thái</option>
-                        <option value="paid">Đã đóng</option>
-                        <option value="unpaid">Chưa đóng</option>
-                    </select>
-                    
-                    <button class="btn btn-primary">
-                        🔽 Lọc
-                    </button>
-                </div>
-            </div>
-
-            <!-- Semester Filter -->
-            <div class="semester-filter">
-                <span>📅</span>
-                <span style="font-weight: 600; font-size: 0.875rem; color: #374151;">Học kỳ:</span>
-                <div class="semester-buttons">
-                    <button class="btn-semester active">HK1-2024</button>
-                    <button class="btn-semester">HK2-2024</button>
-                </div>
-            </div>
-            
-            <!-- Table -->
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>
-                                <input type="checkbox" id="selectAll" />
-                            </th>
-                            <th>MSSV</th>
-                            <th>Họ tên</th>
-                            <th>Khoa</th>
-                            <th>Lớp</th>
-                            <th>Học kỳ</th>
-                            <th>Số tiền</th>
-                            <th>Trạng thái</th>
-                            <th>Ngày đóng</th>
-                            <th>Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                        <!-- Table rows will be rendered by JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Summary -->
-            <div class="summary">
-                <div>
-                    Đã chọn: <strong class="text-primary" id="selectedCount">0</strong> mục
-                </div>
-                <div>
-                    Hiển thị: <strong id="displayedCount">5</strong> / <strong id="totalCount">5</strong> sinh viên
-                </div>
-            </div>
-            
-            <!-- Action Buttons -->
-            <div class="action-buttons">
-                <button class="btn btn-action btn-purple" id="btnReceipt">
-                    📄 Lập phiếu thu (<span id="receiptCount">0</span> mục)
-                </button>
-                
-                <button class="btn btn-action btn-blue" id="btnExport">
-                    📥 Thống kê & Xuất báo cáo
-                </button>
-
-                <button class="btn btn-action btn-gray" id="btnRemind">
-                    📧 Gửi nhắc nhở
-                </button>
-            </div>
-        </div>
-        
-        <!-- Exception Alert
-        <div class="alert">
-            <div class="alert-content">
-                <div class="alert-icon">⚠️</div>
-                <div class="alert-body">
-                    <h4>⚠️ Luồng Xử Lý</h4>
-                    <div>
-                        <p><strong>Luồng chính (Ghi nhận):</strong></p>
-                        <ul>
-                            <li>Vào "Quản lý Đoàn phí" → Tìm sinh viên</li>
-                            <li>Nhấn "Xác nhận đã đóng" → Trạng thái đoàn phí được cập nhật</li>
-                        </ul>
-                        
-                        <p style="margin-top: 0.75rem;"><strong>Luồng chính (Lập phiếu thu/Thống kê):</strong></p>
-                        <ul>
-                            <li>Chọn các sinh viên đã đóng (checkbox)</li>
-                            <li>Nhấn "Lập phiếu thu" → Tạo phiếu thu PDF</li>
-                            <li>Hoặc vào "Thống kê" → Xem biểu đồ và xuất Excel</li>
-                        </ul>
-
-                        <p style="margin-top: 0.75rem;"><strong>Kết quả:</strong></p>
-                        <ul>
-                            <li class="alert-success">✅ Trạng thái đoàn phí được cập nhật</li>
-                            <li class="alert-success">✅ Phiếu thu được tạo hoặc biểu đồ thống kê được hiển thị</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div> -->
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <p>© 2025 Hệ thống Quản lý Đoàn viên - Trường ĐHSPKT | Nhóm 37</p>
-                <p>Use Case: Cập nhật đoàn phí (ghi nhận, lập phiếu thu, thống kê)</p>
-            </div>
-        </div>
-    </footer>
+    <div class="sticky-footer" id="footer-actions">
+      <div class="footer-left">
+        Đã chọn:
+        <b
+          id="selected-count"
+          style="color: var(--primary-blue); font-size: 18px"
+          >0</b
+        >
+        sinh viên
+      </div>
+      <button class="footer-btn btn-purple">
+        <i class="fas fa-file-invoice"></i> Lập phiếu thu
+      </button>
+      <button class="footer-btn btn-blue">
+        <i class="fas fa-file-export"></i> Xuất Excel
+      </button>
+      <button class="footer-btn btn-gray">
+        <i class="fas fa-paper-plane"></i> Gửi nhắc nhở
+      </button>
+    </div>
 
     <script>
-        // Initial data
-        let doanPhiList = [
-            { id: 1, mssv: 'SV001', name: 'Nguyễn Văn A', khoa: 'CNTT', class: '22IT1', semester: 'HK1-2024', status: 'unpaid', amount: 50000, date: null },
-            { id: 2, mssv: 'SV002', name: 'Trần Thị B', khoa: 'CNTT', class: '22IT2', semester: 'HK1-2024', status: 'paid', amount: 50000, date: '2024-10-15' },
-            { id: 3, mssv: 'SV003', name: 'Lê Văn C', khoa: 'Cơ khí', class: '22CK1', semester: 'HK1-2024', status: 'unpaid', amount: 50000, date: null },
-            { id: 4, mssv: 'SV004', name: 'Phạm Thị D', khoa: 'CNTT', class: '22IT1', semester: 'HK1-2024', status: 'paid', amount: 50000, date: '2024-10-20' },
-            { id: 5, mssv: 'SV005', name: 'Hoàng Văn E', khoa: 'Điện', class: '22D1', semester: 'HK1-2024', status: 'unpaid', amount: 50000, date: null },
+      // 1. TẠO DỮ LIỆU GIẢ: ĐA DẠNG KHÓA VÀ ÍT LỚP
+      const facultyMap = {
+        CNTT: "T",
+        "Kiến trúc": "KT",
+        "Môi trường": "MT",
+        "Cơ khí": "C",
+        "Xây dựng": "XD",
+        "Điện - Điện tử": "DT",
+      };
+
+      const cohorts = ["21", "22", "23"];
+      let classList = [];
+      let classIdCounter = 1;
+
+      Object.keys(facultyMap).forEach((facultyName) => {
+        const facultyCode = facultyMap[facultyName];
+        cohorts.forEach((year) => {
+          const numberOfClasses = 2 + Math.floor(Math.random() * 3);
+          for (let i = 1; i <= numberOfClasses; i++) {
+            const total = 30 + Math.floor(Math.random() * 20);
+            const collected = Math.floor(Math.random() * (total + 1));
+            const isComplete = collected === total;
+
+            const className = `${year}${facultyCode}${i}`;
+            classList.push({
+              id: `CLASS_${classIdCounter++}`,
+              name: className,
+              faculty: facultyName,
+              total: total,
+              collected: collected,
+              status: isComplete,
+              file: isComplete ? `bien_lai_${className}.pdf` : null,
+            });
+          }
+        });
+      });
+
+      document.getElementById("stat-total-class").innerText = classList.length;
+      document.getElementById("stat-completed").innerText = classList.filter(
+        (c) => c.status
+      ).length;
+      document.getElementById("stat-incomplete").innerText = classList.filter(
+        (c) => !c.status
+      ).length;
+
+      // 2. KHỞI TẠO DROPDOWN KHOA
+      function initFacultyFilter() {
+        const select = document.getElementById("filter-faculty");
+        const uniqueFaculties = Object.keys(facultyMap).sort();
+        uniqueFaculties.forEach((fac) => {
+          const option = document.createElement("option");
+          option.value = fac;
+          option.innerText = fac;
+          select.appendChild(option);
+        });
+      }
+
+      // 3. RENDER TABLE
+      function filterClasses() {
+        const searchText = document
+          .getElementById("search-text")
+          .value.toLowerCase();
+        const filterFaculty = document.getElementById("filter-faculty").value;
+        const filterStatus = document.getElementById("filter-status").value;
+
+        const tbody = document.getElementById("tbody-classes");
+        tbody.innerHTML = "";
+        let hasResult = false;
+        let countVisible = 0;
+
+        classList.forEach((cls) => {
+          const matchName = cls.name.toLowerCase().includes(searchText);
+          const matchFaculty =
+            filterFaculty === "" || cls.faculty === filterFaculty;
+          let matchStatus = true;
+          if (filterStatus === "1") matchStatus = cls.status === true;
+          if (filterStatus === "0") matchStatus = cls.status === false;
+
+          if (matchName && matchFaculty && matchStatus) {
+            hasResult = true;
+            countVisible++;
+            const percent = Math.round((cls.collected / cls.total) * 100);
+            const statusBadge = cls.status
+              ? `<span class="badge badge-success"><i class="fas fa-check"></i> Hoàn thành</span>`
+              : `<span class="badge badge-danger">Chưa xong</span>`;
+            const fileHtml = cls.file
+              ? `<a href="#" class="file-link"><i class="fas fa-paperclip"></i> ${cls.file}</a>`
+              : `<span style="color:#bbb; font-style:italic">Chưa nộp</span>`;
+
+            const row = `
+                        <tr>
+                            <td>${countVisible}</td>
+                            <td style="font-weight:bold; color:var(--primary-blue)">${
+                              cls.name
+                            }</td>
+                            <td><span class="badge badge-faculty">${
+                              cls.faculty
+                            }</span></td>
+                            <td>${cls.total}</td>
+                            <td><b>${cls.collected}</b>/${cls.total}</td>
+                            <td>
+                                <div style="width: 100px; height: 6px; background: #eee; border-radius: 3px; overflow: hidden;">
+                                    <div style="width: ${percent}%; height: 100%; background: ${
+              cls.status ? "var(--success)" : "var(--danger)"
+            }"></div>
+                                </div>
+                                <small style="font-size:11px; color:#777">${percent}%</small>
+                            </td>
+                            <td>${statusBadge}</td>
+                            <td>${fileHtml}</td>
+                            <td>
+                                <button class="btn-action btn-detail" onclick="openClassDetail('${
+                                  cls.name
+                                }', ${cls.total})">
+                                    <i class="fas fa-eye"></i> Xem DS
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+            tbody.innerHTML += row;
+          }
+        });
+
+        const msg = document.getElementById("no-result-msg");
+        if (!hasResult) msg.classList.remove("hidden");
+        else msg.classList.add("hidden");
+      }
+
+      // ==========================================
+      // CÁC HÀM XỬ LÝ SINH VIÊN
+      // ==========================================
+      function generateStudents(count) {
+        const students = [];
+        const firstNames = [
+          "Nguyễn",
+          "Trần",
+          "Lê",
+          "Phạm",
+          "Hoàng",
+          "Huỳnh",
+          "Phan",
+          "Vũ",
+          "Đặng",
+        ];
+        const middleNames = ["Văn", "Thị", "Minh", "Thanh", "Đức", "Hữu", "Mỹ"];
+        const lastNames = [
+          "An",
+          "Bình",
+          "Cường",
+          "Dũng",
+          "Giang",
+          "Hương",
+          "Hùng",
+          "Linh",
+          "Tùng",
+          "Vy",
+          "Yến",
         ];
 
-        let selectedItems = [];
-        let searchTerm = '';
-        let filterStatus = 'all';
-
-        // Get elements
-        const searchInput = document.getElementById('searchInput');
-        const filterStatusSelect = document.getElementById('filterStatus');
-        const selectAllCheckbox = document.getElementById('selectAll');
-        const tableBody = document.getElementById('tableBody');
-        const btnReceipt = document.getElementById('btnReceipt');
-        const btnExport = document.getElementById('btnExport');
-        const btnRemind = document.getElementById('btnRemind');
-
-        // Event listeners
-        searchInput.addEventListener('input', (e) => {
-            searchTerm = e.target.value;
-            renderTable();
-        });
-
-        filterStatusSelect.addEventListener('change', (e) => {
-            filterStatus = e.target.value;
-            renderTable();
-        });
-
-        selectAllCheckbox.addEventListener('change', (e) => {
-            if (e.target.checked) {
-                selectedItems = getFilteredList().map(item => item.id);
-            } else {
-                selectedItems = [];
-            }
-            renderTable();
-        });
-
-        btnReceipt.addEventListener('click', handleCreateReceipt);
-        btnExport.addEventListener('click', handleExportReport);
-        btnRemind.addEventListener('click', () => {
-            alert('Gửi email nhắc nhở đến sinh viên chưa đóng đoàn phí');
-        });
-
-        // Functions
-        function getFilteredList() {
-            return doanPhiList.filter(item => {
-                const matchSearch = item.mssv.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                   item.name.toLowerCase().includes(searchTerm.toLowerCase());
-                const matchStatus = filterStatus === 'all' || item.status === filterStatus;
-                return matchSearch && matchStatus;
-            });
+        for (let k = 1; k <= count; k++) {
+          const isPaid = Math.random() > 0.4;
+          const randDate = new Date(2023, 9, 1 + Math.floor(Math.random() * 30))
+            .toISOString()
+            .split("T")[0];
+          students.push({
+            id: `SV${2024000 + k}`,
+            name: `${
+              firstNames[Math.floor(Math.random() * firstNames.length)]
+            } ${middleNames[Math.floor(Math.random() * middleNames.length)]} ${
+              lastNames[Math.floor(Math.random() * lastNames.length)]
+            }`,
+            dob: `${1 + Math.floor(Math.random() * 28)}/${
+              1 + Math.floor(Math.random() * 12)
+            }/2004`,
+            amount: "50.000đ",
+            status: isPaid,
+            paidDate: isPaid ? randDate : "-",
+          });
         }
+        return students;
+      }
 
-        function updateStats() {
-            const stats = {
-                total: doanPhiList.length,
-                paid: doanPhiList.filter(d => d.status === 'paid').length,
-                unpaid: doanPhiList.filter(d => d.status === 'unpaid').length,
-                totalAmount: doanPhiList.filter(d => d.status === 'paid').reduce((sum, d) => sum + d.amount, 0)
-            };
+      function openClassDetail(className, totalStudents) {
+        document.getElementById("view-chidoan").classList.add("hidden");
+        document.getElementById("view-sinhvien").classList.remove("hidden");
+        document.getElementById("current-class-name").innerText = className;
 
-            document.getElementById('totalStudents').textContent = stats.total;
-            document.getElementById('paidCount').textContent = stats.paid;
-            document.getElementById('paidPercent').textContent = ((stats.paid/stats.total)*100).toFixed(1) + '% tỷ lệ';
-            document.getElementById('unpaidCount').textContent = stats.unpaid;
-            document.getElementById('unpaidPercent').textContent = ((stats.unpaid/stats.total)*100).toFixed(1) + '% còn lại';
-            document.getElementById('totalAmountM').textContent = (stats.totalAmount/1000000).toFixed(1) + 'M';
-            document.getElementById('totalAmount').textContent = stats.totalAmount.toLocaleString() + 'đ';
-        }
+        const students = generateStudents(totalStudents);
+        const tbody = document.getElementById("tbody-students");
+        let html = "";
 
-        function renderTable() {
-            const filteredList = getFilteredList();
-            
-            tableBody.innerHTML = '';
-            
-            filteredList.forEach(item => {
-                const row = document.createElement('tr');
-                const isChecked = selectedItems.includes(item.id);
-                
-                row.innerHTML = `
-                    <td>
-                        <input 
-                            type="checkbox" 
-                            ${isChecked ? 'checked' : ''} 
-                            onchange="handleSelectItem(${item.id})"
-                        />
-                    </td>
-                    <td style="font-weight: 500;">${item.mssv}</td>
-                    <td>${item.name}</td>
-                    <td>${item.khoa}</td>
-                    <td>${item.class}</td>
-                    <td>${item.semester}</td>
-                    <td style="font-weight: 600; color: #3782f5;">${item.amount.toLocaleString()}đ</td>
-                    <td>
-                        <span class="status-badge ${item.status === 'paid' ? 'status-paid' : 'status-unpaid'}">
-                            ${item.status === 'paid' ? '✓ Đã đóng' : '✗ Chưa đóng'}
-                        </span>
-                    </td>
-                    <td style="font-size: 0.875rem; color: #6b7280;">
-                        ${item.date || '-'}
-                    </td>
-                    <td>
-                        ${item.status === 'unpaid' 
-                            ? `<button class="btn btn-confirm" onclick="handleConfirmPayment(${item.id})">Xác nhận đã đóng</button>`
-                            : `<span class="text-success">✓ Hoàn tất</span>`
-                        }
-                    </td>
+        students.forEach((sv) => {
+          const statusBadge = sv.status
+            ? `<span class="badge badge-success">Đã đóng</span>`
+            : `<span class="badge badge-danger">Chưa đóng</span>`;
+          const actionBtn = sv.status
+            ? `<span style="color:var(--success); font-weight:600"><i class="fas fa-check-circle"></i> Hoàn tất</span>`
+            : `<button class="btn-action btn-confirm" onclick="togglePay(this)">Xác nhận thu</button>`;
+
+          html += `
+                    <tr>
+                        <td><input type="checkbox" class="student-check" onchange="updateCount()"></td>
+                        <td>${sv.id}</td>
+                        <td style="font-weight:500">${sv.name}</td>
+                        <td>${sv.dob}</td>
+                        <td>${sv.amount}</td>
+                        <td>${statusBadge}</td>
+                        <td>${sv.paidDate}</td>
+                        <td>${actionBtn}</td>
+                    </tr>
                 `;
-                
-                tableBody.appendChild(row);
-            });
+        });
+        tbody.innerHTML = html;
+        window.scrollTo(0, 0);
+        updateCount();
+      }
 
-            // Update summary
-            document.getElementById('selectedCount').textContent = selectedItems.length;
-            document.getElementById('displayedCount').textContent = filteredList.length;
-            document.getElementById('totalCount').textContent = doanPhiList.length;
-            document.getElementById('receiptCount').textContent = selectedItems.length;
+      function backToClassList() {
+        document.getElementById("view-sinhvien").classList.add("hidden");
+        document.getElementById("view-chidoan").classList.remove("hidden");
+      }
 
-            // Update select all checkbox
-            selectAllCheckbox.checked = filteredList.length > 0 && selectedItems.length === filteredList.length;
+      // ===============================================
+      // CẬP NHẬT MỚI: HÀM XỬ LÝ NÚT XÁC NHẬN THU TIỀN
+      // ===============================================
+      function togglePay(btn) {
+        // Xác nhận người dùng (tùy chọn)
+        if (confirm("Xác nhận đã thu tiền cho sinh viên này?")) {
+          // 1. Tìm cái dòng (TR) chứa cái nút bấm
+          const tr = btn.closest("tr");
+
+          // 2. Thay đổi trạng thái (Cột thứ 6 - index 5)
+          // Từ Badge đỏ -> Badge xanh
+          tr.cells[5].innerHTML = `<span class="badge badge-success">Đã đóng</span>`;
+
+          // 3. Cập nhật ngày đóng (Cột thứ 7 - index 6) -> Lấy ngày hôm nay
+          const today = new Date();
+          const dd = String(today.getDate()).padStart(2, "0");
+          const mm = String(today.getMonth() + 1).padStart(2, "0");
+          const yyyy = today.getFullYear();
+          tr.cells[6].innerText = `${yyyy}-${mm}-${dd}`;
+
+          // 4. Thay nút bấm bằng chữ "Hoàn tất" (Cột thứ 8 - index 7)
+          tr.cells[7].innerHTML = `<span style="color:var(--success); font-weight:600"><i class="fas fa-check-circle"></i> Hoàn tất</span>`;
         }
+      }
 
-        function handleSelectItem(id) {
-            if (selectedItems.includes(id)) {
-                selectedItems = selectedItems.filter(item => item !== id);
-            } else {
-                selectedItems.push(id);
-            }
-            renderTable();
-        }
+      function updateCount() {
+        const checkboxes = document.querySelectorAll(".student-check:checked");
+        document.getElementById("selected-count").innerText = checkboxes.length;
+      }
 
-        function handleConfirmPayment(id) {
-            doanPhiList = doanPhiList.map(item => 
-                item.id === id 
-                    ? {...item, status: 'paid', date: new Date().toISOString().split('T')[0]} 
-                    : item
-            );
-            updateStats();
-            renderTable();
-            alert('✅ Đã xác nhận đóng đoàn phí thành công!');
-        }
+      document
+        .getElementById("check-all")
+        .addEventListener("change", function () {
+          const checkboxes = document.querySelectorAll(".student-check");
+          checkboxes.forEach((cb) => (cb.checked = this.checked));
+          updateCount();
+        });
 
-        function handleCreateReceipt() {
-            if (selectedItems.length === 0) {
-                alert('❌ Vui lòng chọn ít nhất một sinh viên đã đóng đoàn phí!');
-                return;
-            }
-            
-            const paidItems = selectedItems.filter(id => {
-                const item = doanPhiList.find(d => d.id === id);
-                return item && item.status === 'paid';
-            });
-            
-            if (paidItems.length === 0) {
-                alert('❌ Chỉ có thể lập phiếu thu cho sinh viên đã đóng đoàn phí!');
-                return;
-            }
-            
-            alert(`✅ Đã tạo phiếu thu cho ${paidItems.length} sinh viên!\n\nMã phiếu: PT${Date.now()}`);
-        }
-
-        function handleExportReport() {
-            alert('📊 Đang xuất báo cáo thống kê đoàn phí...\n\nFile sẽ được tải về định dạng Excel');
-        }
-
-        // Initial render
-        updateStats();
-        renderTable();
+      initFacultyFilter();
+      filterClasses();
     </script>
-</body>
+  </body>
 </html>

@@ -1,236 +1,445 @@
-<!doctype html>
-  <html lang="vi">
-  <head>
-      <meta charset="utf-8" />
-      <meta name="viewport" content="width=device-width,initial-scale=1" />
-      <title>Quản Lý Sinh Viên</title>
-      <style>
-        :root{
-          --main: #3782f5;
-          --main-dark: #2563eb;
-          --green: #16a34a;
-          --purple: #8b5cf6;
-          --bg: #f8fafc;
-          --radius: 14px;
-          font-family: 'Inter', system-ui, sans-serif;
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Đoàn Viên - Admin Đoàn Trường</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3782f5;
+            --primary-dark: #2563eb;
+            --bg: #f1f5f9;
+            --white: #ffffff;
+            --text: #334155;
+            --border: #e2e8f0;
+            --radius: 12px;
         }
-        *{box-sizing:border-box;margin:0;padding:0}
-        html{scroll-behavior:smooth;}
-        body{background:var(--bg);color:#1e293b;min-height:100vh;display:flex;flex-direction:column;animation:fadeIn 0.6s ease-in}
-        header{
-          background:var(--main);
-          color:white;
-          padding:18px 32px;
-          display:flex;
-          justify-content:space-between;
-          align-items:center;
-          position:sticky;
-          top:0;
-          z-index:10;
-          box-shadow:0 2px 6px rgba(55,130,245,0.25);
-        }
-        .brand{display:flex;align-items:center;gap:14px;}
-        .logo-circle{
-          width:50px;height:50px;border-radius:50%;
-          background:white;display:flex;align-items:center;justify-content:center;
-        }
-        .logo-circle svg{width:28px;height:28px;fill:var(--main);}
-        .brand-text h1{font-size:22px;font-weight:700;color:white;margin:0}
-        .brand-text .sub{font-size:13px;color:#e0e7ff;margin-top:2px}
-        header .right span{margin-right:12px}
-        header button{
-          background:white;
-          color:var(--main);
-          border:none;
-          padding:8px 16px;
-          border-radius:8px;
-          font-weight:600;
-          cursor:pointer;
-          transition:0.25s;
-        }
-        header button:hover{background:#e0eaff;transform:translateY(-1px)}
-        main{flex:1;padding:40px 20px;max-width:1200px;margin:auto;width:100%}
-        .breadcrumb{color:#64748b;font-size:14px;margin-bottom:20px}
-        .card{
-          background:white;
-          border-radius:var(--radius);
-          box-shadow:0 4px 12px rgba(0,0,0,0.06);
-          padding:24px;
-          transition:0.3s;
-        }
-        .card:hover{box-shadow:0 6px 16px rgba(0,0,0,0.08)}
-        .card h2{color:var(--main);margin-bottom:6px}
-        .search-row{display:flex;gap:12px;margin:16px 0}
-        .search-row input{
-          flex:1;padding:12px 16px;border:1px solid #cbd5e1;border-radius:10px;
-          font-size:15px;outline:none;transition:0.25s;
-        }
-        .search-row input:focus{border-color:var(--main);box-shadow:0 0 0 3px rgba(55,130,245,0.2)}
-        .search-row button{
-          background:var(--main);color:white;padding:12px 20px;border:none;
-          border-radius:10px;font-weight:600;cursor:pointer;transition:0.3s;
-        }
-        .search-row button:hover{filter:brightness(1.1);transform:translateY(-1px)}
-        .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
-        .stat{padding:20px;border-radius:10px;text-align:center}
-        .stat:nth-child(1){background:#eff6ff;color:var(--main)}
-        .stat:nth-child(2){background:#ecfdf5;color:var(--green)}
-        .stat:nth-child(3){background:#f5f3ff;color:var(--purple)}
-        .stat .num{font-size:26px;font-weight:700;margin-bottom:4px}
-        table{width:100%;border-collapse:collapse;margin-top:10px}
-        th,td{padding:14px 12px;text-align:left;border-top:1px solid #e2e8f0;font-size:15px}
-        th{background:#f8fafc;color:var(--main);font-weight:700}
-        tr:hover td{background:#f1f5ff}
-        .btn-edit{
-          background:var(--main);color:white;padding:8px 14px;border:none;
-          border-radius:8px;cursor:pointer;font-size:14px;transition:0.25s;
-        }
-        .btn-edit:hover{background:var(--main-dark);transform:translateY(-1px)}
-        #noResults{text-align:center;padding:40px;color:#64748b;display:none}
-        #noResults svg{opacity:0.3;margin-bottom:10px}
-        footer{
-          background:linear-gradient(90deg, var(--main) 0%, var(--main-dark) 100%);
-          color:white;
-          text-align:center;
-          padding:20px;
-          margin-top:20px;
-          font-size:14px;
-          border-top:2px solid #ffffff33;
-          opacity:0;
-          animation:fadeInFooter 0.8s ease forwards 0.5s;
-        }
-        footer p{margin:4px 0;}
-        footer p:hover{color:#f8fafc;transition:0.3s}
-        footer p:last-child{color:#e0e7ff;font-size:12px;}
-        @keyframes fadeInFooter{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-        @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-        /* modal */
-        .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.45);
-          display:none;align-items:center;justify-content:center;z-index:50;}
-        .modal{background:white;padding:24px;border-radius:14px;
-          width:100%;max-width:600px;animation:fadeIn 0.3s ease}
-        .modal h3{color:var(--main);margin-bottom:12px}
-        .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-        label{font-size:13px;color:#475569;margin-bottom:4px;display:block}
-        input,select{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px}
-        .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
-        .btn-save{background:var(--main);color:white;border:none;padding:10px 18px;border-radius:10px;cursor:pointer}
-        .btn-cancel{background:#e2e8f0;border:none;padding:10px 18px;border-radius:10px;cursor:pointer}
-      </style>
-  </head>
-  <body>
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* HEADER */
+        header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .brand { display: flex; align-items: center; gap: 12px; }
+        .brand i { font-size: 24px; }
+        .user-panel button { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 6px 15px; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        .user-panel button:hover { background: white; color: var(--primary); }
+
+        /* MAIN CONTAINER */
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; flex: 1; width: 100%; }
+        
+        /* BREADCRUMB & TOOLBAR */
+        .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: white; padding: 15px 20px; border-radius: var(--radius); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .breadcrumb { font-size: 16px; color: #64748b; display: flex; align-items: center; gap: 8px; }
+        .breadcrumb span { cursor: pointer; }
+        .breadcrumb span:hover { color: var(--primary); text-decoration: underline; }
+        .breadcrumb .active { color: var(--primary); font-weight: 700; cursor: default; text-decoration: none; }
+        .btn-back { background: #cbd5e1; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; display: none; } /* Ẩn mặc định */
+
+        /* VIEW: KHOA GRID */
+        .grid-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .card-item { background: white; padding: 25px; border-radius: var(--radius); box-shadow: 0 2px 4px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; border: 1px solid transparent; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .card-item:hover { transform: translateY(-3px); border-color: var(--primary); box-shadow: 0 10px 15px -3px rgba(55, 130, 245, 0.15); }
+        .card-icon { width: 60px; height: 60px; background: #eff6ff; color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 15px; }
+        .card-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+        .card-sub { font-size: 13px; color: #64748b; }
+
+        /* VIEW: TABLE (SINH VIÊN) */
+        .table-wrapper { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: none; /* Ẩn mặc định */ }
+        table { width: 100%; border-collapse: collapse; }
+        thead { background: #f8fafc; border-bottom: 2px solid var(--border); }
+        th, td { padding: 14px 20px; text-align: left; font-size: 14px; border-bottom: 1px solid var(--border); }
+        th { font-weight: 700; color: #475569; }
+        tr:hover { background: #f8fafc; }
+        
+        .status-tag { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .status-active { background: #dcfce7; color: #166534; }
+        .status-transferred { background: #fee2e2; color: #991b1b; }
+
+        .btn-action { border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: 0.2s; background: var(--primary); color: white; }
+        .btn-action:hover { background: var(--primary-dark); }
+
+        /* MODAL EDIT */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; animation: fadeIn 0.2s; overflow-y: auto; }
+        .modal-content { background: white; width: 95%; max-width: 800px; padding: 30px; border-radius: 14px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); margin: 20px 0; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
+        .modal-header h2 { font-size: 20px; color: var(--primary); }
+        .close-btn { font-size: 24px; cursor: pointer; color: #94a3b8; }
+        .close-btn:hover { color: #ef4444; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group.full { grid-column: span 2; }
+        .form-group label { font-size: 13px; font-weight: 600; color: #475569; }
+        .form-group input, .form-group select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; transition: 0.2s; }
+        .form-group input:focus, .form-group select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(55,130,245,0.1); }
+        .form-group input:disabled { background: #f1f5f9; color: #64748b; cursor: not-allowed; }
+
+        .modal-footer { margin-top: 25px; display: flex; justify-content: flex-end; gap: 10px; padding-top: 15px; border-top: 1px solid var(--border); }
+        .btn-save { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .btn-cancel { background: #e2e8f0; color: #475569; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+
+        footer { text-align: center; padding: 20px; color: #64748b; font-size: 13px; background: white; margin-top: auto; border-top: 1px solid var(--border); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
     <header>
-      <div class="brand">
-        <div class="logo-circle">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-3.31 0-6 1.79-6 4v2h12v-2c0-2.21-2.69-4-6-4z"/></svg>
+        <div class="brand">
+            <i class="fa-solid fa-user-shield"></i>
+            <div>
+                <h1 style="font-size: 18px; margin: 0;">Quản Lý Đoàn Viên</h1>
+                <span style="font-size: 12px; opacity: 0.8;">Đoàn Trường</span>
+            </div>
         </div>
-        <div class="brand-text">
-          <h1>Quản Lý Sinh Viên</h1>
-          <div class="sub">Đoàn Trường - Admin</div>
+        <div class="user-panel">
+            <span style="margin-right: 10px; font-size: 14px;">Xin chào, Đoàn trường</span>
+            <button onclick="window.location.href='pageLogin.html'">Đăng xuất</button>
         </div>
-      </div>
-      <div class="right"><span>👤 Admin - Ban Thường vụ</span><button>Đăng xuất</button></div>
     </header>
-    <main>
-      <div class="breadcrumb">Trang chủ / <strong style="color:var(--main)">Quản lý sinh viên</strong></div>
-      <section class="card">
-        <h2>Danh Sách Sinh Viên</h2>
-        <p style="color:#64748b;font-size:14px">Tìm kiếm và quản lý thông tin đoàn viên</p>
-        <div class="search-row">
-          <input id="searchInput" placeholder="Tìm kiếm theo MSSV, tên hoặc lớp...">
-          <button id="searchBtn">🔍 Tìm kiếm</button>
+
+    <div class="container">
+        <div class="toolbar">
+            <div class="breadcrumb" id="breadcrumb">
+                <span onclick="goHome()">Trang chủ</span>
+                </div>
+            <button class="btn-back" id="btnBack" onclick="handleBack()"><i class="fa-solid fa-arrow-left"></i> Quay lại</button>
         </div>
-        <div class="grid-3">
-          <div class="stat"><div class="num" id="statTotal">0</div><div>Tổng sinh viên</div></div>
-          <div class="stat"><div class="num" id="statActive">0</div><div>Đang học</div></div>
-          <div class="stat"><div class="num" id="statSearchCount">0</div><div>Kết quả tìm kiếm</div></div>
+
+        <div id="viewKhoa" class="grid-view">
+            </div>
+
+        <div id="viewLop" class="grid-view" style="display: none;">
+            </div>
+
+        <div id="viewSinhVien" class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mã ĐV</th>
+                        <th>Họ tên</th>
+                        <th>Ngày sinh</th>
+                        <th>Giới tính</th>
+                        <th>Chức vụ</th>
+                        <th>Trạng thái SH</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="studentTableBody">
+                    </tbody>
+            </table>
+            <div id="emptyState" style="text-align:center; padding: 40px; display:none;">
+                <p style="color:#94a3b8">Chưa có đoàn viên nào trong chi đoàn này.</p>
+            </div>
         </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>STT</th><th>MSSV</th><th>Họ tên</th><th>Khoa</th><th>Lớp</th><th>Số điện thoại</th><th>Email</th><th>Thao tác</th></tr></thead>
-            <tbody id="tableBody"></tbody>
-          </table>
+    </div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-pen-to-square"></i> Cập Nhật Thông Tin Đoàn Viên</h2>
+                <div class="close-btn" onclick="closeModal()">&times;</div>
+            </div>
+            <div class="modal-body">
+                <form id="editForm" class="form-grid">
+                    <div class="form-group">
+                        <label>Mã Đoàn Viên (MaDV)</label>
+                        <input type="text" id="madv" disabled title="Khóa chính không thể sửa">
+                    </div>
+                    <div class="form-group">
+                        <label>Mã Chi Đoàn (maChiDoan)</label>
+                        <input type="text" id="machidoan" disabled title="Thuộc chi đoàn hiện tại">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Họ và Tên (hoTen)</label>
+                        <input type="text" id="hoten">
+                    </div>
+                    <div class="form-group">
+                        <label>Giới tính (gioiTinh)</label>
+                        <select id="gioitinh">
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                            <option value="Khác">Khác</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ngày sinh (ngaySinh)</label>
+                        <input type="date" id="ngaysinh">
+                    </div>
+                    <div class="form-group">
+                        <label>Ngày vào Đoàn (ngayVaoDoan)</label>
+                        <input type="date" id="ngayvaodoan">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Số điện thoại (SDT)</label>
+                        <input type="text" id="sdt">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="email">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Chức vụ (chucVu)</label>
+                        <select id="chucvu">
+                            <option value="Đoàn viên">Đoàn viên</option>
+                            <option value="Bí thư">Bí thư</option>
+                            <option value="Phó bí thư">Phó bí thư</option>
+                            <option value="UV BCH">UV BCH</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Trạng thái SH (trangThaiSH)</label>
+                        <select id="trangthaish">
+                            <option value="Đang sinh hoạt">Đang sinh hoạt</option>
+                            <option value="Đã chuyển đi">Đã chuyển đi</option>
+                            <option value="Đã trưởng thành đoàn">Đã trưởng thành đoàn</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nơi chuyển đến (noiChuyenDen)</label>
+                        <input type="text" id="noichuyenden" placeholder="Nếu trạng thái là chuyển đi">
+                    </div>
+                    <div class="form-group">
+                        <label>Ngày chuyển đến (ngayChuyenDen)</label>
+                        <input type="date" id="ngaychuyenden">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal()">Hủy bỏ</button>
+                <button class="btn-save" onclick="saveStudent()">Lưu thay đổi</button>
+            </div>
         </div>
-        <div id="noResults">
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none"><path d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4zm0 2c-4 0-8 2-8 4v2h16v-2c0-2-4-4-8-4z" fill="currentColor"/></svg>
-          <p>Không tìm thấy sinh viên nào</p>
-        </div>
-      </section>
-    </main>
+    </div>
+
     <footer>
-      <p>© 2025 Hệ thống Quản lý Đoàn viên - Trường ĐHSPKT | Nhóm 37</p>
-      <p>Use Case: Cập nhật thông tin sinh viên, đoàn viên</p>
+        <p>© 2025 Hệ thống Quản lý Đoàn viên - Trường ĐHSPKT | Nhóm 37</p>
     </footer>
 
-    <div id="modal" class="modal-backdrop">
-      <div class="modal">
-        <h3>Chỉnh Sửa Thông Tin Sinh Viên</h3>
-        <div class="grid-2">
-          <div><label>MSSV</label><input id="edit_mssv" disabled></div>
-          <div><label>Họ và tên</label><input id="edit_name"></div>
-          <div><label>Email</label><input id="edit_email" type="email"></div>
-          <div><label>Số điện thoại</label><input id="edit_phone" type="tel" maxlength="10"></div>
-          <div><label>Khoa</label><select id="edit_khoa"><option value="CNTT">CNTT</option><option value="Cơ khí">Cơ khí</option></select></div>
-          <div><label>Lớp</label><input id="edit_class"></div>
-        </div>
-        <div class="modal-actions">
-          <button class="btn-cancel" id="cancelBtn">Hủy</button>
-          <button class="btn-save" id="saveBtn">Lưu</button>
-        </div>
-      </div>
-    </div>
     <script>
-      const students=[
-        {id:1,mssv:"SV001",name:"Nguyễn Văn A",khoa:"CNTT",class:"22IT1",phone:"0123456789",email:"nva@ute.udn.vn",status:"active"},
-        {id:2,mssv:"SV002",name:"Trần Thị B",khoa:"Cơ khí",class:"22CK1",phone:"0987654321",email:"ttb@ute.udn.vn",status:"active"},
-        {id:3,mssv:"SV003",name:"Lê Văn C",khoa:"CNTT",class:"22IT2",phone:"0369852147",email:"lvc@ute.udn.vn",status:"active"}
-      ];
-      const tableBody=document.getElementById("tableBody");
-      const searchInput=document.getElementById("searchInput");
-      const statTotal=document.getElementById("statTotal");
-      const statActive=document.getElementById("statActive");
-      const statSearchCount=document.getElementById("statSearchCount");
-      const noResults=document.getElementById("noResults");
-      const modal=document.getElementById("modal");
-      const edit_mssv=document.getElementById("edit_mssv");
-      const edit_name=document.getElementById("edit_name");
-      const edit_email=document.getElementById("edit_email");
-      const edit_phone=document.getElementById("edit_phone");
-      const edit_khoa=document.getElementById("edit_khoa");
-      const edit_class=document.getElementById("edit_class");
-      let editing=null;
+        // DỮ LIỆU GIẢ LẬP
+        const faculties = [
+            { id: 'CNTT', name: 'Khoa Công Nghệ Thông Tin', icon: 'fa-laptop-code' },
+            { id: 'CK', name: 'Khoa Cơ Khí', icon: 'fa-gears' },
+            { id: 'DIEN', name: 'Khoa Điện - Điện Tử', icon: 'fa-bolt' },
+            { id: 'SPCN', name: 'Khoa Sư phạm Công Nghiệp', icon: 'fa-chalkboard-user' },
+            { id: 'XAYDUNG', name: 'Khoa Xây Dựng', icon: 'fa-building' }
+        ];
 
-      function renderTable(term=""){
-        const filtered=students.filter(s=>s.mssv.toLowerCase().includes(term.toLowerCase())||s.name.toLowerCase().includes(term.toLowerCase())||s.class.toLowerCase().includes(term.toLowerCase()));
-        tableBody.innerHTML="";
-        filtered.forEach((s,i)=>{
-          const tr=document.createElement("tr");
-          tr.innerHTML=`<td>${i+1}</td><td style="color:#3782f5;font-weight:600">${s.mssv}</td><td>${s.name}</td><td>${s.khoa}</td><td>${s.class}</td><td>${s.phone}</td><td>${s.email}</td><td><button class='btn-edit' data-id='${s.id}'>✏️ Chỉnh sửa</button></td>`;
-          tableBody.appendChild(tr);
-        });
-        statTotal.textContent=students.length;
-        statActive.textContent=students.filter(s=>s.status==="active").length;
-        statSearchCount.textContent=filtered.length;
-        noResults.style.display=filtered.length?"none":"block";
-        document.querySelectorAll(".btn-edit").forEach(btn=>btn.onclick=()=>openModal(btn.dataset.id));
-      }
-      function openModal(id){
-        const s=students.find(st=>st.id==id);if(!s)return;
-        editing=s;
-        edit_mssv.value=s.mssv;edit_name.value=s.name;edit_email.value=s.email;edit_phone.value=s.phone;edit_khoa.value=s.khoa;edit_class.value=s.class;
-        modal.style.display="flex";
-      }
-      function closeModal(){modal.style.display="none";editing=null;}
-      document.getElementById("cancelBtn").onclick=closeModal;
-      document.getElementById("saveBtn").onclick=()=>{
-        if(!editing)return;
-        editing.name=edit_name.value;editing.email=edit_email.value;editing.phone=edit_phone.value;editing.khoa=edit_khoa.value;editing.class=edit_class.value;
-        alert("✅ Đã lưu thay đổi cho "+editing.mssv);
-        closeModal();renderTable(searchInput.value);
-      };
-      document.getElementById("searchBtn").onclick=()=>renderTable(searchInput.value);
-      searchInput.onkeyup=()=>renderTable(searchInput.value);
-      renderTable();
+        const classes = {
+            'CNTT': ['22IT1', '22IT2', '22IT3', '21IT1'],
+            'CK': ['22CK1', '22CK2'],
+            'DIEN': ['22D1', '22D2'],
+            'SPCN': ['22SP1', '22SP2'],
+            'XAYDUNG': ['22XD1']
+        };
+
+        // Dữ liệu sinh viên đầy đủ theo ERD
+        let students = [
+            { maDV: '22IT001', hoTen: 'Nguyễn Văn A', ngaySinh: '2004-01-01', gioiTinh: 'Nam', sdt: '0905123456', email: 'nva@ute.udn.vn', chucVu: 'Bí thư', maChiDoan: '22IT1', ngayVaoDoan: '2020-03-26', noiChuyenDen: '', ngayChuyenDen: '', trangThaiSH: 'Đang sinh hoạt' },
+            { maDV: '22IT002', hoTen: 'Trần Thị B', ngaySinh: '2004-05-20', gioiTinh: 'Nữ', sdt: '0905111222', email: 'ttb@ute.udn.vn', chucVu: 'Đoàn viên', maChiDoan: '22IT1', ngayVaoDoan: '2020-03-26', noiChuyenDen: '', ngayChuyenDen: '', trangThaiSH: 'Đang sinh hoạt' },
+            { maDV: '22IT003', hoTen: 'Lê Văn C', ngaySinh: '2004-12-10', gioiTinh: 'Nam', sdt: '0905333444', email: 'lvc@ute.udn.vn', chucVu: 'Đoàn viên', maChiDoan: '22IT1', ngayVaoDoan: '2020-03-26', noiChuyenDen: 'Đơn vị mới A', ngayChuyenDen: '2024-01-01', trangThaiSH: 'Đã chuyển đi' },
+            { maDV: '22CK001', hoTen: 'Phạm Văn D', ngaySinh: '2004-02-15', gioiTinh: 'Nam', sdt: '0905999888', email: 'pvd@ute.udn.vn', chucVu: 'Đoàn viên', maChiDoan: '22CK1', ngayVaoDoan: '2020-03-26', noiChuyenDen: '', ngayChuyenDen: '', trangThaiSH: 'Đang sinh hoạt' },
+            { maDV: '22SP001', hoTen: 'Hoàng Thị E', ngaySinh: '2004-08-08', gioiTinh: 'Nữ', sdt: '0905777666', email: 'hte@ute.udn.vn', chucVu: 'Đoàn viên', maChiDoan: '22SP1', ngayVaoDoan: '2020-03-26', noiChuyenDen: '', ngayChuyenDen: '', trangThaiSH: 'Đang sinh hoạt' }
+        ];
+
+        // STATE MANAGEMENT
+        let currentLevel = 'KHOA'; // KHOA | LOP | SINHVIEN
+        let selectedFaculty = null;
+        let selectedClass = null;
+        let editingStudentId = null;
+
+        const viewKhoa = document.getElementById('viewKhoa');
+        const viewLop = document.getElementById('viewLop');
+        const viewSinhVien = document.getElementById('viewSinhVien');
+        const breadcrumb = document.getElementById('breadcrumb');
+        const btnBack = document.getElementById('btnBack');
+
+        // INIT
+        function init() {
+            renderFaculties();
+        }
+
+        // RENDER FUNCTIONS
+        function renderFaculties() {
+            viewKhoa.innerHTML = faculties.map(f => `
+                <div class="card-item" onclick="selectFaculty('${f.id}', '${f.name}')">
+                    <div class="card-icon"><i class="fa-solid ${f.icon}"></i></div>
+                    <div class="card-title">${f.name}</div>
+                    <div class="card-sub">${classes[f.id] ? classes[f.id].length : 0} Chi đoàn</div>
+                </div>
+            `).join('');
+            
+            updateView('KHOA');
+        }
+
+        function renderClasses(facultyId) {
+            const classList = classes[facultyId] || [];
+            viewLop.innerHTML = classList.map(c => `
+                <div class="card-item" onclick="selectClass('${c}')">
+                    <div class="card-icon" style="color: #10b981; background: #ecfdf5"><i class="fa-solid fa-users-rectangle"></i></div>
+                    <div class="card-title">Chi đoàn ${c}</div>
+                    <div class="card-sub">Bấm để xem danh sách</div>
+                </div>
+            `).join('');
+            
+            updateView('LOP');
+        }
+
+        function renderStudents(classId) {
+            const list = students.filter(s => s.maChiDoan === classId);
+            const tbody = document.getElementById('studentTableBody');
+            
+            if (list.length === 0) {
+                document.getElementById('emptyState').style.display = 'block';
+                tbody.innerHTML = '';
+            } else {
+                document.getElementById('emptyState').style.display = 'none';
+                tbody.innerHTML = list.map(s => {
+                    let statusClass = s.trangThaiSH === 'Đang sinh hoạt' ? 'status-active' : 'status-transferred';
+                    return `
+                        <tr>
+                            <td style="font-weight:600; color:var(--primary)">${s.maDV}</td>
+                            <td>${s.hoTen}</td>
+                            <td>${formatDate(s.ngaySinh)}</td>
+                            <td>${s.gioiTinh}</td>
+                            <td>${s.chucVu}</td>
+                            <td><span class="status-tag ${statusClass}">${s.trangThaiSH}</span></td>
+                            <td>
+                                <button class="btn-action" onclick="openEditModal('${s.maDV}')">
+                                    <i class="fa-solid fa-pen"></i> Sửa
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+            updateView('SINHVIEN');
+        }
+
+        // NAVIGATION LOGIC
+        function selectFaculty(id, name) {
+            selectedFaculty = { id, name };
+            renderClasses(id);
+        }
+
+        function selectClass(id) {
+            selectedClass = id;
+            renderStudents(id);
+        }
+
+        function goHome() {
+            selectedFaculty = null;
+            selectedClass = null;
+            renderFaculties();
+        }
+
+        function handleBack() {
+            if (currentLevel === 'SINHVIEN') {
+                renderClasses(selectedFaculty.id);
+            } else if (currentLevel === 'LOP') {
+                goHome();
+            }
+        }
+
+        function updateView(level) {
+            currentLevel = level;
+            
+            // Hide all views
+            viewKhoa.style.display = 'none';
+            viewLop.style.display = 'none';
+            viewSinhVien.style.display = 'none';
+
+            // Show current view and Update breadcrumb
+            let breadHtml = `<span onclick="goHome()">Trang chủ</span>`;
+            
+            if (level === 'KHOA') {
+                viewKhoa.style.display = 'grid';
+                btnBack.style.display = 'none';
+            } 
+            else if (level === 'LOP') {
+                viewLop.style.display = 'grid';
+                btnBack.style.display = 'block';
+                breadHtml += ` <i class="fa-solid fa-chevron-right" style="font-size:12px; margin:0 5px"></i> <span class="active">${selectedFaculty.name}</span>`;
+            } 
+            else if (level === 'SINHVIEN') {
+                viewSinhVien.style.display = 'block';
+                btnBack.style.display = 'block';
+                breadHtml += ` <i class="fa-solid fa-chevron-right" style="font-size:12px; margin:0 5px"></i> <span onclick="renderClasses('${selectedFaculty.id}')">${selectedFaculty.name}</span>`;
+                breadHtml += ` <i class="fa-solid fa-chevron-right" style="font-size:12px; margin:0 5px"></i> <span class="active">Chi đoàn ${selectedClass}</span>`;
+            }
+
+            breadcrumb.innerHTML = breadHtml;
+        }
+
+        // MODAL LOGIC
+        function openEditModal(id) {
+            const s = students.find(x => x.maDV === id);
+            if (!s) return;
+            
+            editingStudentId = id;
+            
+            // Fill Data to Form
+            document.getElementById('madv').value = s.maDV;
+            document.getElementById('hoten').value = s.hoTen;
+            document.getElementById('ngaysinh').value = s.ngaySinh;
+            document.getElementById('gioitinh').value = s.gioiTinh;
+            document.getElementById('sdt').value = s.sdt;
+            document.getElementById('email').value = s.email;
+            document.getElementById('chucvu').value = s.chucVu;
+            document.getElementById('machidoan').value = s.maChiDoan;
+            document.getElementById('ngayvaodoan').value = s.ngayVaoDoan;
+            document.getElementById('noichuyenden').value = s.noiChuyenDen || '';
+            document.getElementById('ngaychuyenden').value = s.ngayChuyenDen || '';
+            document.getElementById('trangthaish').value = s.trangThaiSH;
+
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('editModal').style.display = 'none';
+            editingStudentId = null;
+        }
+
+        function saveStudent() {
+            const index = students.findIndex(x => x.maDV === editingStudentId);
+            if (index !== -1) {
+                // Update object based on inputs
+                students[index].hoTen = document.getElementById('hoten').value;
+                students[index].ngaySinh = document.getElementById('ngaysinh').value;
+                students[index].gioiTinh = document.getElementById('gioitinh').value;
+                students[index].sdt = document.getElementById('sdt').value;
+                students[index].email = document.getElementById('email').value;
+                students[index].chucVu = document.getElementById('chucvu').value;
+                students[index].ngayVaoDoan = document.getElementById('ngayvaodoan').value;
+                students[index].noiChuyenDen = document.getElementById('noichuyenden').value;
+                students[index].ngayChuyenDen = document.getElementById('ngaychuyenden').value;
+                students[index].trangThaiSH = document.getElementById('trangthaish').value;
+                
+                alert('✅ Đã cập nhật thông tin thành công!');
+                closeModal();
+                renderStudents(selectedClass); // Re-render table
+            }
+        }
+
+        // HELPER
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const [y, m, d] = dateString.split('-');
+            return `${d}/${m}/${y}`;
+        }
+
+        // Start
+        init();
+
     </script>
-  </body>
+</body>
 </html>

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Hoạt động - Đoàn Khoa</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; }
+        
+        .header { background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%); color: white; padding: 20px 40px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 24px; }
+        .user-info { display: flex; align-items: center; gap: 15px; }
+        .btn-logout { background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid white; padding: 8px 20px; border-radius: 6px; cursor: pointer; transition: all 0.3s; }
+        .btn-logout:hover { background: white; color: #4CAF50; }
+
+        .container { max-width: 1400px; margin: 30px auto; padding: 0 20px; }
+        .toolbar { background: white; padding: 20px 25px; border-radius: 12px 12px 0 0; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); display: flex; justify-content: space-between; align-items: center; }
+        .btn-add { background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .search-box input { padding: 10px 40px 10px 15px; border: 2px solid #e0e0e0; border-radius: 8px; width: 300px; }
+
+        .table-container { background: white; border-radius: 0 0 12px 12px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        thead { background: #f8f9fa; }
+        th { padding: 18px 15px; text-align: left; font-weight: 600; color: #555; border-bottom: 2px solid #e0e0e0; }
+        th:first-child { padding-left: 25px; }
+        th:last-child { text-align: center; }
+        td { padding: 18px 15px; color: #666; font-size: 14px; border-bottom: 1px solid #f0f0f0; }
+        td:first-child { padding-left: 25px; font-weight: 600; color: #333; }
+        td:last-child { text-align: center; }
+
+        .badge { display: inline-block; padding: 5px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        .badge-pending { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .badge-approved { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .badge-rejected { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .badge-open { background: #e3f2fd; color: #1976d2; }
+        .badge-full { background: #ffebee; color: #c62828; }
+        .badge-ended { background: #eeeeee; color: #616161; }
+
+        .btn-icon { width: 36px; height: 36px; border: none; border-radius: 6px; cursor: pointer; margin: 0 2px; }
+        .btn-edit { background: #4CAF50; color: white; }
+        .btn-delete { background: #f44336; color: white; }
+
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); }
+        .modal-content { background: white; margin: 30px auto; padding: 0; border-radius: 12px; width: 90%; max-width: 700px; max-height: 90vh; overflow-y: auto; }
+        .modal-header { background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%); color: white; padding: 20px 25px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; }
+        .modal-body { padding: 25px; }
+        .modal-footer { padding: 20px 25px; background: #f9f9f9; border-radius: 0 0 12px 12px; display: flex; justify-content: flex-end; gap: 10px; }
+        
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .full-width { grid-column: span 2; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; }
+        
+        .progress-mini { width: 60px; height: 6px; background: #f0f0f0; border-radius: 3px; overflow: hidden; margin-top: 5px; }
+        .progress-mini-fill { height: 100%; background: #4CAF50; }
+        .note { font-size: 0.8rem; color: #666; margin-top: 4px; font-style: italic; }
+
+        .desc-cell {
+            max-width: 200px;
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis;
+            font-style: italic;
+            color: #777;
+        }
+
+        .info-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .info-box strong {
+            color: #2e7d32;
+        }
+
+        .error-box {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            color: #c62828;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>🎓 Quản lý Hoạt động Đoàn Khoa</h1>
+            <div class="user-info">
+                <span>Xin chào, <strong id="userName">Đoàn Khoa</strong></span>
+                <button class="btn-logout" onclick="logout()">Đăng xuất</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="errorBox" class="error-box" style="display:none;">
+            <strong>⚠️ Lỗi:</strong> <span id="errorMessage"></span>
+        </div>
+
+        <div class="info-box">
+            <strong>📌 Lưu ý:</strong> Các hoạt động bạn tạo sẽ ở trạng thái <span class="badge badge-pending">Chờ duyệt</span> và cần được Đoàn trường phê duyệt trước khi hiển thị công khai.
+        </div>
+
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <button class="btn-add" onclick="openModal('add')">
+                    <span>➕</span> <span>Tạo hoạt động mới</span>
+                </button>
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Tìm kiếm hoạt động..." onkeyup="searchActivities()">
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tên hoạt động</th>
+                        <th>Mô tả</th>
+                        <th>Ngày tổ chức</th>
+                        <th>Đăng ký / Max</th>
+                        <th>Điểm</th>
+                        <th>Trạng thái duyệt</th>
+                        <th>Trạng thái HD</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="activityModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Tạo hoạt động mới</h2>
+                <span style="cursor:pointer; font-weight:bold; color:white; font-size:24px" onclick="closeModal()">✕</span>
+            </div>
+            <div class="modal-body">
+                <form id="activityForm">
+                    <input type="hidden" id="_idHD">
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label>Tên hoạt động <span style="color:red">*</span></label>
+                            <input type="text" id="tenHD" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Mã Khoa</label>
+                            <input type="text" id="maKhoa" readonly style="background:#f0f0f0">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Đơn vị tổ chức</label>
+                            <input type="text" id="donViToChuc" readonly style="background:#f0f0f0">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Ngày tổ chức <span style="color:red">*</span></label>
+                            <input type="datetime-local" id="ngayToChuc" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Địa điểm <span style="color:red">*</span></label>
+                            <input type="text" id="diaDiem" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Số lượng tối đa <span style="color:red">*</span></label>
+                            <input type="number" id="soLuongMAX" min="1" max="130" required placeholder="Nhập tối đa 130">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Điểm hoạt động (Max 10)</label>
+                            <input type="number" id="diemHoatDong" min="0" max="10" value="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Đã đăng ký</label>
+                            <input type="number" id="soLuongDaDK" value="0" disabled style="background:#f0f0f0">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Trạng thái duyệt</label>
+                            <input type="text" id="trangThaiDuyet" value="Chờ duyệt" disabled style="background:#f0f0f0">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Trạng thái HD</label>
+                            <input type="text" id="trangThaiHD" value="Đang mở" disabled style="background:#f0f0f0">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>Mô tả hoạt động</label>
+                            <textarea id="moTa" rows="3" placeholder="Nhập nội dung chi tiết hoạt động..."></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal()" style="padding:10px 20px; border:none; border-radius:4px; cursor:pointer">Hủy</button>
+                <button onclick="saveActivity()" style="padding:10px 20px; border:none; border-radius:4px; cursor:pointer; background:#4CAF50; color:white">Lưu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Lấy thông tin user từ sessionStorage
+        let currentUser = null;
+        
+        function checkLogin() {
+            try {
+                const userStr = sessionStorage.getItem('currentUser');
+                console.log('Session data:', userStr);
+                
+                if (!userStr) {
+                    showError('Bạn chưa đăng nhập!');
+                    setTimeout(() => {
+                        window.location.href = 'pageLogin.html';
+                    }, 2000);
+                    return false;
+                }
+                
+                currentUser = JSON.parse(userStr);
+                console.log('Current user:', currentUser);
+                
+                if (!currentUser || currentUser.role !== 'faculty') {
+                    showError('Bạn không có quyền truy cập trang này!');
+                    setTimeout(() => {
+                        window.location.href = 'pageLogin.html';
+                    }, 2000);
+                    return false;
+                }
+                
+                document.getElementById('userName').textContent = currentUser.name || 'Đoàn Khoa';
+                return true;
+            } catch (e) {
+                console.error('Login check error:', e);
+                showError('Lỗi xác thực! Vui lòng đăng nhập lại.');
+                setTimeout(() => {
+                    window.location.href = 'pageLogin.html';
+                }, 2000);
+                return false;
+            }
+        }
+
+        function showError(message) {
+            const errorBox = document.getElementById('errorBox');
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = message;
+            errorBox.style.display = 'block';
+        }
+
+        // Kiểm tra đăng nhập ngay khi trang load
+        if (!checkLogin()) {
+            // Dừng việc load các phần còn lại của trang
+            document.body.innerHTML = '<div style="padding:40px; text-align:center; font-size:18px;">Đang chuyển hướng đến trang đăng nhập...</div>';
+        }
+
+        // Dữ liệu mẫu
+        let activities = [
+            {
+                _idHD: 'HD002',
+                tenHD: 'Workshop: AI & ChatGPT',
+                maKhoa: 'CNTT',
+                donViToChuc: 'LCĐ Khoa CNTT',
+                ngayToChuc: '2025-04-10T08:00',
+                diaDiem: 'Hội trường F',
+                soLuongMAX: 100,
+                soLuongDaDK: 100,
+                diemHoatDong: 5,
+                trangThaiDuyet: 'Đã duyệt',
+                trangThaiHD: 'Đã đủ số lượng',
+                moTa: 'Hội thảo chuyên đề về ứng dụng Trí tuệ nhân tạo trong học tập và nghiên cứu khoa học.'
+            },
+            {
+                _idHD: 'HD008',
+                tenHD: 'Cuộc thi Lập trình C++ 2025',
+                maKhoa: 'CNTT',
+                donViToChuc: 'LCĐ Khoa CNTT',
+                ngayToChuc: '2025-07-15T09:00',
+                diaDiem: 'Phòng máy A3',
+                soLuongMAX: 60,
+                soLuongDaDK: 0,
+                diemHoatDong: 7,
+                trangThaiDuyet: 'Chờ duyệt',
+                trangThaiHD: 'Đang mở',
+                moTa: 'Cuộc thi lập trình nhằm nâng cao kỹ năng code và tư duy giải thuật.'
+            },
+            {
+                _idHD: 'HD009',
+                tenHD: 'Hội thảo Sư phạm hiện đại',
+                maKhoa: 'SPCN',
+                donViToChuc: 'LCĐ Khoa SPCN',
+                ngayToChuc: '2025-06-20T14:00',
+                diaDiem: 'Hội trường B',
+                soLuongMAX: 80,
+                soLuongDaDK: 25,
+                diemHoatDong: 6,
+                trangThaiDuyet: 'Đã duyệt',
+                trangThaiHD: 'Đang mở',
+                moTa: 'Chia sẻ các phương pháp giảng dạy hiện đại và ứng dụng công nghệ trong giáo dục.'
+            }
+        ];
+
+        let currentMode = 'add';
+        let editingId = null;
+
+        function renderTable(data = null) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            if (!currentUser) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:red">Lỗi xác thực người dùng</td></tr>`;
+                return;
+            }
+
+            // Lọc chỉ hiển thị hoạt động của khoa mình
+            const facultyActivities = (data || activities).filter(a => a.maKhoa === currentUser.maKhoa);
+
+            if (facultyActivities.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px">Chưa có hoạt động nào</td></tr>`;
+                return;
+            }
+
+            facultyActivities.forEach(item => {
+                let badgeClassDuyet = 'badge-pending';
+                if(item.trangThaiDuyet === 'Đã duyệt') badgeClassDuyet = 'badge-approved';
+                if(item.trangThaiDuyet === 'Từ chối') badgeClassDuyet = 'badge-rejected';
+
+                let badgeClass = 'badge-ended';
+                if(item.trangThaiHD === 'Đang mở') badgeClass = 'badge-open';
+                if(item.trangThaiHD === 'Đã đủ số lượng') badgeClass = 'badge-full';
+
+                // Chỉ cho phép sửa/xóa nếu chưa duyệt
+                let actionButtons = '';
+                if (item.trangThaiDuyet === 'Chờ duyệt') {
+                    actionButtons = `
+                        <button class="btn-icon btn-edit" onclick="editActivity('${item._idHD}')">✏️</button>
+                        <button class="btn-icon btn-delete" onclick="deleteActivity('${item._idHD}')">🗑️</button>
+                    `;
+                } else {
+                    actionButtons = `<span style="color:#999; font-size:12px">Đã duyệt</span>`;
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div style="font-weight:bold">${item.tenHD}</div>
+                        <small style="color:#888">${item._idHD}</small>
+                    </td>
+                    <td class="desc-cell" title="${item.moTa || 'Không có mô tả'}">
+                        ${item.moTa || '<i>(Trống)</i>'}
+                    </td>
+                    <td>${new Date(item.ngayToChuc).toLocaleString('vi-VN')}</td>
+                    <td>
+                        <div>${item.soLuongDaDK} / ${item.soLuongMAX}</div>
+                        <div class="progress-mini">
+                            <div class="progress-mini-fill" style="width: ${(item.soLuongDaDK/item.soLuongMAX)*100}%"></div>
+                        </div>
+                    </td>
+                    <td style="font-weight:bold; color:#4CAF50; text-align:center">${item.diemHoatDong}</td>
+                    <td><span class="badge ${badgeClassDuyet}">${item.trangThaiDuyet}</span></td>
+                    <td><span class="badge ${badgeClass}">${item.trangThaiHD}</span></td>
+                    <td>
+                        ${actionButtons}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openModal(mode, id = null) {
+            if (!currentUser) {
+                alert('Lỗi xác thực! Vui lòng đăng nhập lại.');
+                return;
+            }
+
+            currentMode = mode;
+            const modal = document.getElementById('activityModal');
+            document.getElementById('activityForm').reset();
+
+            // Điền sẵn thông tin khoa
+            document.getElementById('maKhoa').value = currentUser.maKhoa;
+            document.getElementById('donViToChuc').value = `LCĐ Khoa ${currentUser.maKhoa}`;
+
+            if (mode === 'add') {
+                document.getElementById('modalTitle').innerText = 'Tạo hoạt động mới';
+                document.getElementById('soLuongDaDK').value = 0;
+                document.getElementById('trangThaiDuyet').value = 'Chờ duyệt';
+                document.getElementById('trangThaiHD').value = 'Đang mở';
+            } else {
+                document.getElementById('modalTitle').innerText = 'Cập nhật hoạt động';
+                const item = activities.find(x => x._idHD === id);
+                editingId = id;
+
+                document.getElementById('_idHD').value = item._idHD;
+                document.getElementById('tenHD').value = item.tenHD;
+                document.getElementById('ngayToChuc').value = item.ngayToChuc;
+                document.getElementById('diaDiem').value = item.diaDiem;
+                document.getElementById('soLuongMAX').value = item.soLuongMAX;
+                document.getElementById('diemHoatDong').value = item.diemHoatDong;
+                document.getElementById('soLuongDaDK').value = item.soLuongDaDK;
+                document.getElementById('trangThaiDuyet').value = item.trangThaiDuyet;
+                document.getElementById('trangThaiHD').value = item.trangThaiHD;
+                document.getElementById('moTa').value = item.moTa || "";
+            }
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('activityModal').style.display = 'none';
+        }
+
+        function saveActivity() {
+            const tenHD = document.getElementById('tenHD').value;
+            const maKhoa = currentUser.maKhoa;
+            const donViToChuc = document.getElementById('donViToChuc').value;
+            const ngayToChuc = document.getElementById('ngayToChuc').value;
+            const diaDiem = document.getElementById('diaDiem').value;
+            const soLuongMAX = parseInt(document.getElementById('soLuongMAX').value);
+            const diemHoatDong = parseInt(document.getElementById('diemHoatDong').value);
+            const moTa = document.getElementById('moTa').value;
+
+            if (!tenHD || !ngayToChuc || !diaDiem || !soLuongMAX) {
+                alert("Vui lòng nhập đủ thông tin!");
+                return;
+            }
+
+            if (soLuongMAX > 130) {
+                alert("⚠️ Lỗi: Số lượng tối đa không được vượt quá 130 sinh viên!");
+                document.getElementById('soLuongMAX').value = 130;
+                return;
+            }
+
+            if (diemHoatDong > 10) {
+                alert("⚠️ Lỗi: Điểm hoạt động tối đa là 10 điểm!");
+                document.getElementById('diemHoatDong').value = 10;
+                return;
+            }
+
+            const soLuongDaDK = currentMode === 'add' ? 0 : parseInt(document.getElementById('soLuongDaDK').value);
+            let trangThaiHD = 'Đang mở';
+            if (soLuongDaDK >= soLuongMAX) trangThaiHD = 'Đã đủ số lượng';
+
+            if (currentMode === 'add') {
+                const newId = 'HD' + Date.now().toString().slice(-4);
+                activities.unshift({
+                    _idHD: newId,
+                    tenHD, 
+                    maKhoa, 
+                    donViToChuc, 
+                    ngayToChuc, 
+                    diaDiem,
+                    soLuongMAX, 
+                    soLuongDaDK, 
+                    diemHoatDong, 
+                    trangThaiDuyet: 'Chờ duyệt',
+                    trangThaiHD, 
+                    moTa
+                });
+                alert('✅ Tạo hoạt động thành công! Đang chờ Đoàn trường duyệt.');
+            } else {
+                const idx = activities.findIndex(x => x._idHD === editingId);
+                if (idx !== -1) {
+                    activities[idx] = {
+                        ...activities[idx],
+                        tenHD, ngayToChuc, diaDiem,
+                        soLuongMAX, diemHoatDong, trangThaiHD, moTa
+                    };
+                    alert('✅ Cập nhật hoạt động thành công!');
+                }
+            }
+            closeModal();
+            renderTable();
+        }
+
+        function deleteActivity(id) {
+            if(confirm("Xóa hoạt động này?")) {
+                activities = activities.filter(x => x._idHD !== id);
+                renderTable();
+                alert('✅ Đã xóa hoạt động!');
+            }
+        }
+
+        function editActivity(id) {
+            const item = activities.find(x => x._idHD === id);
+            if (item.trangThaiDuyet !== 'Chờ duyệt') {
+                alert('⚠️ Không thể sửa hoạt động đã được duyệt!');
+                return;
+            }
+            openModal('edit', id);
+        }
+        
+        function searchActivities() {
+            if (!currentUser) return;
+            
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = activities.filter(a => 
+                a.maKhoa === currentUser.maKhoa &&
+                (a.tenHD.toLowerCase().includes(term) || 
+                a.donViToChuc.toLowerCase().includes(term))
+            );
+            renderTable(filtered);
+        }
+
+        function logout() {
+            if(confirm('Bạn có chắc muốn đăng xuất?')) {
+                sessionStorage.removeItem('currentUser');
+                window.location.href = 'pageLogin.html';
+            }
+        }
+
+        // Render bảng khi trang load xong
+        if (currentUser) {
+            renderTable();
+        }
+    </script>
+</body>
+</html>

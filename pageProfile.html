@@ -3,33 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thông Tin Cá Nhân (Mô phỏng)</title>
+    <title>Thông Tin Đoàn Viên</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
-        /* ================================================= */
-        /* 1. KHAI BÁO BIẾN & TÔNG MÀU CHỦ ĐẠO (Xanh Dương) */
-        /* ================================================= */
         :root {
-            --primary-color: #3782f5; /* Blue 500 */
-            --primary-dark: #2563eb;  /* Blue 600 */
-            --primary-lighter: #60a5fa; /* Blue 400 */
-            --primary-lightest: #eff6ff; /* Blue 50 */
-            --gradient-start: #4c8de5; /* Header Gradient Start */
-            --gradient-end: #88b1f5;  /* Header Gradient End */
-            --text-color: #374151; /* Gray 700 */
+            --primary-color: #3782f5; 
+            --primary-dark: #2563eb;  
+            --primary-lighter: #60a5fa; 
+            --primary-lightest: #eff6ff; 
+            --gradient-start: #4c8de5; 
+            --gradient-end: #88b1f5;  
+            --text-color: #374151; 
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: var(--primary-lightest); /* Nền trang */
+            background-color: var(--primary-lightest); 
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
         
-        /* Cấu trúc chính */
         .main-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -38,10 +34,6 @@
             width: 100%;
             box-sizing: border-box;
         }
-
-        /* ================================================= */
-        /* 2. HEADER & NAVIGATION */
-        /* ================================================= */
 
         .header-top {
             background-color: var(--primary-dark);
@@ -74,7 +66,6 @@
             background-color: #ffffff;
         }
 
-        /* Breadcrumb */
         .breadcrumb {
             color: var(--text-color);
             font-size: 0.9rem;
@@ -89,10 +80,6 @@
         .breadcrumb a:hover {
             color: var(--primary-color);
         }
-
-        /* ================================================= */
-        /* 3. PROFILE CARD */
-        /* ================================================= */
 
         .profile-card {
             background-color: white;
@@ -117,7 +104,6 @@
             gap: 30px; 
         }
 
-        /* Avatar Box */
         .avatar-box {
             width: 120px; 
             height: 120px;
@@ -139,13 +125,11 @@
             object-fit: cover;
         }
         
-        /* Icon User mặc định */
         .avatar-box i.fa-user {
             font-size: 4rem; 
             color: #ccc;
         }
 
-        /* Nút Upload Avatar */
         .avatar-upload-btn {
             position: absolute;
             bottom: -5px;
@@ -172,7 +156,6 @@
             cursor: pointer;
         }
 
-        /* Basic Info Text */
         .basic-info h2 {
             font-size: 2.2rem; 
             margin: 0 0 5px 0;
@@ -187,7 +170,6 @@
             opacity: 0.9;
         }
 
-        /* Tags */
         .tags {
             display: flex;
             gap: 10px;
@@ -203,7 +185,6 @@
             color: white;
         }
 
-        /* Action Buttons */
         .action-buttons button {
             padding: 0.7rem 1.5rem;
             border-radius: 8px;
@@ -226,17 +207,13 @@
         }
 
         .action-buttons #cancelBtn {
-            background-color: #ef4444; /* Red */
+            background-color: #ef4444; 
             color: white;
         }
 
         .action-buttons #editBtn:hover {
             background-color: #f3f4f6;
         }
-        
-        /* ================================================= */
-        /* 4. FORM & CONTENT */
-        /* ================================================= */
         
         .profile-content {
             padding: 30px;
@@ -275,7 +252,8 @@
             gap: 5px;
         }
 
-        .form-group input {
+        .form-group input, 
+        .form-group select {
             width: 100%;
             padding: 10px 12px;
             border: 2px solid #e5e7eb;
@@ -285,22 +263,27 @@
             color: var(--text-color);
             box-sizing: border-box;
             line-height: 1.5; 
+            font-size: 1rem;
         }
 
-        .form-group input:focus:not(:disabled) {
+        .form-group input:focus:not(:disabled),
+        .form-group select:focus:not(:disabled) {
             border-color: var(--primary-color);
             background-color: white;
             outline: none;
             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
         }
 
-        .form-group input:disabled {
+        .form-group input:disabled,
+        .form-group select:disabled {
             cursor: not-allowed;
-            color: #6b7280;
+            color: #797979;      
             background-color: white; 
             border-color: transparent; 
             padding-left: 0; 
-            font-weight: 500;
+            font-weight: 300;    
+            opacity: 1;         
+            appearance: none;
         }
 
         .form-group .note {
@@ -309,7 +292,6 @@
             margin-top: 4px;
         }
         
-        /* Đoàn Info Styling */
         .status-tag {
             padding: 6px 12px;
             border-radius: 6px;
@@ -328,7 +310,6 @@
             color: #6b7280;
         }
 
-        /* Error/Message */
         .error-text {
             color: #ef4444; 
             font-size: 0.8rem;
@@ -355,38 +336,6 @@
             color: #b91c1c; 
         }
 
-        /* Alert Section */
-        .alert-exception {
-            background-color: #fef2f2; 
-            border-left: 4px solid #ef4444;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            margin-bottom: 50px; 
-        }
-        
-        .alert-exception .title {
-            font-size: 1.125rem;
-            font-weight: 700;
-            color: #b91c1c;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .alert-exception p {
-            font-size: 0.9rem;
-            color: #7f1d1d;
-            margin-top: 5px;
-        }
-        
-        .alert-exception .result {
-            font-weight: 700;
-            color: #065f46;
-        }
-
-        /* Footer */
         .footer {
             background-color: #3782f5; 
             color: white;
@@ -403,26 +352,26 @@
         <div class="logo-section">
             <i class="fa-solid fa-user-graduate"></i>
             <div>
-                <h2 style="font-size: 1.2rem; margin: 0;">Thông Tin Cá Nhân</h2>
-                <p style="font-size: 0.8rem; margin: 0; opacity: 0.8;">Đoàn viên - Trường ĐHSPKT</p>
+                <h2 style="font-size: 1.2rem; margin: 0;">Thông Tin Đoàn Viên</h2>
+                <p style="font-size: 0.8rem; margin: 0; opacity: 0.8;">Trường ĐHSPKT</p>
             </div>
         </div>
         <div class="user-actions">
             <span style="font-size: 0.9rem; margin-right: 10px;">👤 Nguyễn Văn A</span>
-            <button>Đăng xuất</button>
+            <button onclick="window.location.href='pagelogin.html'">Đăng xuất</button>
         </div>
     </header>
 
     <div class="main-container">
         <div class="breadcrumb">
-            <a href="#">Trang chủ</a> / <span style="font-weight: 600;">Thông tin cá nhân</span>
+            <a href="#">Trang chủ</a> / <span style="font-weight: 600;">Hồ sơ Đoàn viên</span>
         </div>
 
         <div class="profile-card">
             <div class="profile-header">
                 <div class="profile-info">
                     <div class="avatar-box">
-                        <i id="avatar" class="fa-solid fa-user"></i> 
+                        <img id="avatar" src="https://i.pinimg.com/736x/4f/16/88/4f16884e6c034f04fd8df26d27937189.jpg" alt="Avatar Sinh Viên">
                         <label for="avatarInput" class="avatar-upload-btn" id="avatarUploadBtn">
                             <i class="fa-solid fa-arrow-up-from-bracket"></i>
                             <input type="file" id="avatarInput" accept="image/*">
@@ -431,10 +380,10 @@
                     
                     <div class="basic-info">
                         <h2>Nguyễn Văn A</h2>
-                        <p>MSSV: 22IT001</p>
+                        <p>Mã ĐV: 22IT001</p>
                         <div class="tags">
-                            <span>Công nghệ Số</span>
-                            <span>Lớp 22IT1</span>
+                            <span>Đoàn viên</span> 
+                            <span>Chi đoàn 22IT1</span>
                         </div>
                     </div>
                 </div>
@@ -448,61 +397,70 @@
 
             <div class="profile-content">
                 <div class="section-title">
-                    <i class="fa-solid fa-user-check"></i> Thông Tin Cá Nhân
+                    <i class="fa-solid fa-id-card"></i> Thông Tin Cơ Bản
                 </div>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label><i class="fa-solid fa-shield-halved"></i> Mã số sinh viên</label>
-                        <input type="text" id="mssv" value="22IT001" disabled>
-                        <p class="note">* Không thể chỉnh sửa</p>
+                        <label><i class="fa-solid fa-shield-halved"></i> Mã Đoàn viên (MaDV)</label>
+                        <input type="text" id="madv" value="22IT001" disabled>
+
                     </div>
                     <div class="form-group">
-                        <label><i class="fa-solid fa-user"></i> Họ và tên</label>
-                        <input type="text" id="name" value="Nguyễn Văn A" disabled>
-                        <p class="note">* Không thể chỉnh sửa</p>
+                        <label><i class="fa-solid fa-user"></i> Họ và tên (hoTen)</label>
+                        <input type="text" id="hoten" value="Nguyễn Văn A" disabled>
+
                     </div>
                     <div class="form-group">
-                        <label><i class="fa-solid fa-envelope"></i> Email <span style="color: red;">*</span></label>
-                        <input type="email" id="email" value="nva@ute.udn.vn" disabled>
-                        <span id="emailError" class="error-text"></span>
+                        <label><i class="fa-solid fa-users"></i> Chi đoàn (maChiDoan)</label>
+                        <input type="text" id="chidoan" value="22IT1" disabled>
                     </div>
                     <div class="form-group">
-                        <label><i class="fa-solid fa-phone"></i> Số điện thoại <span style="color: red;">*</span></label>
-                        <input type="tel" id="phone" value="0917145678" disabled maxlength="10">
-                        <span id="phoneError" class="error-text"></span>
+                        <label><i class="fa-solid fa-briefcase"></i> Chức vụ (chucVu)</label>
+                        <input type="text" id="chucvu" value="Đoàn viên" disabled>
                     </div>
                     <div class="form-group">
-                        <label><i class="fa-solid fa-calendar-days"></i> Ngày sinh</label>
-                        <input type="date" id="dob" value="2004-05-15" disabled>
+                        <label><i class="fa-solid fa-envelope"></i> Email (Tự động)</label>
+                        <input type="email" id="email" value="" disabled>
                     </div>
                     <div class="form-group">
-                        <label><i class="fa-solid fa-location-dot"></i> Địa chỉ</label>
-                        <input type="text" id="address" value="Đà Nẵng" disabled>
+                        <label><i class="fa-solid fa-flag"></i> Trạng thái sinh hoạt (trangThaiSH)</label>
+                        <input type="text" id="trangthai" value="Đang sinh hoạt" disabled>
+                    </div>
+                     <div class="form-group">
+                        <label><i class="fa-solid fa-calendar-check"></i> Ngày vào Đoàn (ngayVaoDoan)</label>
+                        <input type="date" id="ngayvaodoan" value="2020-03-26" disabled>
                     </div>
                 </div>
 
                 <div class="section-title" style="margin-top: 30px;">
-                    <i class="fa-solid fa-book"></i> Thông Tin Đoàn
+                    <i class="fa-solid fa-pen-to-square"></i> Thông Tin Cá Nhân (Có thể cập nhật)
                 </div>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Khoa</label>
-                        <input type="text" id="khoa" value="Công nghệ Số" disabled>
+                        <label><i class="fa-solid fa-calendar-days"></i> Ngày sinh (ngaySinh)</label>
+                        <input type="date" id="ngaysinh" value="2004-05-15" disabled>
                     </div>
                     <div class="form-group">
-                        <label>Lớp sinh hoạt</label>
-                        <input type="text" id="class" value="22IT1" disabled>
+                        <label><i class="fa-solid fa-venus-mars"></i> Giới tính (gioiTinh)</label>
+                        <select id="gioitinh" disabled style="width: 100%; padding: 10px 12px; border: 2px solid #e5e7eb; border-radius: 8px; background-color: #f9fafb; color: var(--text-color);">
+                            <option value="Nam" selected>Nam</option>
+                            <option value="Nữ">Nữ</option>
+                            <option value="Khác">Khác</option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label>Tình trạng sổ đoàn</label>
-                        <div>
-                            <span class="status-tag status-paid">✓ Đã nộp</span>
-                            <span class="status-date">Ngày nộp: 15/09/2024</span>
-                        </div>
+                        <label><i class="fa-solid fa-phone"></i> Số điện thoại (SDT)</label>
+                        <input type="tel" id="sdt" value="0917145678" disabled maxlength="10">
+                        <span id="phoneError" class="error-text"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-map-location-dot"></i> Nơi chuyển đến (noiChuyenDen)</label>
+                        <input type="text" id="noichuyenden" value="" placeholder="Nhập nơi chuyển đến nếu có" disabled>
                     </div>
                     <div class="form-group">
-                        <label>Tình trạng đoàn phí</label>
-                        <span class="status-tag status-paid">✓ Đã đóng HK1-2024</span>
+                        <label><i class="fa-solid fa-calendar-arrow-right"></i> Ngày chuyển đến (ngayChuyenDen)</label>
+                        <input type="date" id="ngaychuyenden" value="" disabled>
                     </div>
                 </div>
             </div>
@@ -513,57 +471,67 @@
 
     <footer class="footer">
         <p style="margin: 0;">© 2025 Hệ thống Quản lý Đoàn viên - Trường ĐHSPKT | Nhóm 37</p>
-        <p style="margin: 5px 0 0 0; font-size: 1rem;">Use Case: Xem và cập nhật thông tin cá nhân</p>
+        <p style="margin: 5px 0 0 0; font-size: 1rem;">Cập nhật thông tin cá nhân theo quy định</p>
     </footer>
 
     <script>
-        // 💡 MÔ PHỎNG REACT: Khai báo State và Ref
         const elements = {
-            // Chỉ lấy các Inputs CÓ THỂ chỉnh sửa: email, phone, dob, address
-            inputs: document.querySelectorAll("#email, #phone, #dob, #address"),
+            // Danh sách các input CÓ THỂ chỉnh sửa
+            inputs: document.querySelectorAll("#ngaysinh, #gioitinh, #sdt, #noichuyenden, #ngaychuyenden"),
+            
+            // Các nút
             editBtn: document.getElementById("editBtn"),
             saveBtn: document.getElementById("saveBtn"),
             cancelBtn: document.getElementById("cancelBtn"),
             avatarUploadBtn: document.getElementById("avatarUploadBtn"),
+            
+            // Elements khác
             avatar: document.getElementById("avatar"),
             avatarInput: document.getElementById("avatarInput"),
-            emailInput: document.getElementById("email"),
-            phoneInput: document.getElementById("phone"),
-            emailError: document.getElementById("emailError"),
+            phoneInput: document.getElementById("sdt"),
             phoneError: document.getElementById("phoneError"),
             systemMessage: document.getElementById("systemMessage"),
+            
+            // Lấy MaDV để sinh email
+            madvInput: document.getElementById("madv"),
+            emailInput: document.getElementById("email")
         };
 
-        // 💡 REACT STATE: const [isEditing, setIsEditing] = useState(false);
+        // Hàm tự động sinh Email
+        function generateEmail() {
+            const madv = elements.madvInput.value.trim();
+            if (madv) {
+                elements.emailInput.value = `${madv}@sv.ute.udn.vn`;
+            }
+        }
+
         let isEditing = false;
-        
-        // 💡 REACT STATE: originalData (Dữ liệu gốc dùng để khôi phục state)
         let originalData = {};
-        let originalAvatarSrc = ''; // Sẽ được lưu khi bắt đầu chỉnh sửa
-        
-        // ------------------------------------------------
-        // 💡 REACT FUNCTION: Hàm cập nhật UI (Tương đương với việc React re-render)
+        let originalAvatarSrc = '';
+
         function updateUI() {
-            // Cập nhật trạng thái disabled của inputs
             elements.inputs.forEach(i => {
                 i.disabled = !isEditing;
                 
-                // Cập nhật style cho Input (Đang edit/Chỉ xem)
                 if (isEditing) {
                     i.style.borderColor = 'var(--primary-color)';
                     i.style.background = 'white';
                     i.style.paddingLeft = '12px';
                     i.style.fontWeight = 'normal';
                 } else {
-                    // Style Read-only
                     i.style.borderColor = 'transparent'; 
                     i.style.background = 'white';
                     i.style.paddingLeft = '0';
                     i.style.fontWeight = '500';
+                    if(i.tagName === 'SELECT') i.style.appearance = 'none';
+                    else i.style.appearance = 'auto';
                 }
             });
 
-            // Cập nhật hiển thị của nút và avatar upload
+            if(isEditing) {
+                document.getElementById('gioitinh').style.appearance = 'auto';
+            }
+
             elements.editBtn.style.display = isEditing ? "none" : "inline-block";
             elements.saveBtn.style.display = isEditing ? "inline-block" : "none";
             elements.cancelBtn.style.display = isEditing ? "inline-block" : "none";
@@ -575,53 +543,39 @@
             }
         }
         
-        // ------------------------------------------------
-        // 💡 REACT HANDLER: Xử lý sự kiện "Chỉnh sửa"
         function handleEdit() {
-            // Khôi phục logic chuyển trạng thái nút
             isEditing = true;
-            
-            // 1. Lưu dữ liệu gốc
             elements.inputs.forEach(i => originalData[i.id] = i.value);
             
-            // 2. Lưu avatar (nếu là thẻ <img>)
             if (elements.avatar.tagName === 'IMG') {
                 originalAvatarSrc = elements.avatar.src;
             } else {
-                originalAvatarSrc = 'icon'; // Đánh dấu là icon để khôi phục sau này
+                originalAvatarSrc = 'icon';
             }
 
-            // 3. Cập nhật UI (bật inputs và chuyển nút)
             updateUI(); 
         }
 
-        // 💡 REACT HANDLER: Xử lý sự kiện "Lưu"
         function handleSave() {
             if (!validateForm()) {
                 showMessage("❌ Vui lòng kiểm tra lại thông tin bị lỗi!", "error");
                 return;
             }
 
-            // Giả lập API call thành công
             isEditing = false; 
             updateUI(); 
 
-            showMessage("✅ Cập nhật thông tin cá nhân thành công!", "success");
+            showMessage("✅ Cập nhật thông tin đoàn viên thành công!", "success");
             setTimeout(hideMessage, 4000);
         }
 
-        // 💡 REACT HANDLER: Xử lý sự kiện "Hủy"
         function handleCancel() {
-            // Khôi phục dữ liệu gốc
             elements.inputs.forEach(i => i.value = originalData[i.id]);
             
-            // Khôi phục avatar
             let avatarElement = document.getElementById('avatar');
-
             if (originalAvatarSrc === 'icon' && avatarElement.tagName === 'IMG') {
-                 // Nếu avatar ban đầu là icon, khôi phục lại icon
                 avatarElement.outerHTML = `<i id="avatar" class="fa-solid fa-user"></i>`;
-                elements.avatar = document.getElementById('avatar'); // Cập nhật lại ref
+                elements.avatar = document.getElementById('avatar');
             } else if (originalAvatarSrc !== 'icon' && avatarElement.tagName === 'IMG') {
                 avatarElement.src = originalAvatarSrc;
             }
@@ -633,26 +587,21 @@
             setTimeout(hideMessage, 2000);
         }
 
-        // 💡 REACT HANDLER: Xử lý đổi Avatar
         function handleAvatarChange(e) {
           if (!isEditing) return;
-
           const file = e.target.files[0];
           if (file) {
             const reader = new FileReader();
             reader.onload = () => {
                 let avatarElement = document.getElementById('avatar');
-                
                 if(avatarElement.tagName === 'I') {
-                    // Thay thế icon bằng thẻ img
                     const newImg = document.createElement('img');
                     newImg.id = 'avatar';
                     newImg.src = reader.result;
                     newImg.alt = 'Avatar';
                     newImg.style.cssText = "width:100%; height:100%; object-fit:cover;";
-
                     avatarElement.parentNode.replaceChild(newImg, avatarElement);
-                    elements.avatar = newImg; // Cập nhật lại ref
+                    elements.avatar = newImg;
                 } else {
                     avatarElement.src = reader.result;
                 }
@@ -661,16 +610,9 @@
           }
         }
 
-        // 💡 REACT FUNCTION: Hàm Validation
         function validateForm() {
           let valid = true;
           clearErrors();
-          
-          const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/;
-          if (!emailPattern.test(elements.emailInput.value)) {
-            elements.emailError.textContent = "⚠️ Email không hợp lệ!";
-            valid = false;
-          }
           
           const phonePattern = /^0[0-9]{9}$/;
           if (!phonePattern.test(elements.phoneInput.value) || elements.phoneInput.value.length !== 10) {
@@ -680,43 +622,29 @@
           return valid;
         }
         
-        // Hàm hỗ trợ xóa lỗi
         function clearErrors() {
-          elements.emailError.textContent = "";
           elements.phoneError.textContent = "";
         }
 
-        // Hàm hiển thị thông báo hệ thống
         function showMessage(msg, type) {
             elements.systemMessage.textContent = msg;
             elements.systemMessage.className = `system-message ${type}`;
             elements.systemMessage.style.display = "block";
         }
         
-        // Hàm ẩn thông báo hệ thống
         function hideMessage() {
             elements.systemMessage.style.display = "none";
         }
 
-        // 💡 Tương đương với Component Did Mount: Gắn sự kiện sau khi DOM tải
         function mountProfilePage() {
-            // Gắn sự kiện cho các nút
-            if (elements.editBtn) {
-                elements.editBtn.onclick = handleEdit;
-            }
-            if (elements.saveBtn) {
-                elements.saveBtn.onclick = handleSave;
-            }
-            if (elements.cancelBtn) {
-                elements.cancelBtn.onclick = handleCancel;
-            }
-            
-            // Gắn sự kiện file change
-            if (elements.avatarInput) {
-                elements.avatarInput.addEventListener("change", handleAvatarChange);
-            }
+            if (elements.editBtn) elements.editBtn.onclick = handleEdit;
+            if (elements.saveBtn) elements.saveBtn.onclick = handleSave;
+            if (elements.cancelBtn) elements.cancelBtn.onclick = handleCancel;
+            if (elements.avatarInput) elements.avatarInput.addEventListener("change", handleAvatarChange);
 
-            // Khởi tạo trạng thái ban đầu (Xem)
+            // Khởi tạo Email tự động ngay khi tải trang
+            generateEmail();
+            
             updateUI();
         }
 

@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cập Nhật Sổ Đoàn - Admin Đoàn Trường</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3782f5;
+            --primary-dark: #2563eb;
+            --secondary: #64748b;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--bg); min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* HEADER */
+        header { 
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
+            color: white; 
+            padding: 15px 40px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 4px 10px rgba(55, 130, 245, 0.2);
+        }
+        .brand { display: flex; align-items: center; gap: 12px; font-size: 20px; font-weight: 700; }
+        .user-panel { display: flex; align-items: center; gap: 15px; }
+        .user-panel button { 
+            background: rgba(255,255,255,0.2); 
+            color: white; 
+            border: 1px solid rgba(255,255,255,0.4); 
+            padding: 8px 16px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            font-weight: 600;
+        }
+        .user-panel button:hover { background: white; color: var(--primary); }
+
+        .container { 
+            max-width: 1600px; 
+            margin: 30px auto; 
+            padding: 0 20px; 
+            flex: 1; 
+        }
+
+        .page-header {
+            background: white;
+            padding: 25px 30px;
+            border-radius: var(--radius);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header h1 {
+            color: #1e293b;
+            font-size: 26px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-back {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+        .btn-back:hover { background: #475569; transform: translateX(-3px); }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 20px 25px;
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-body {
+            padding: 25px;
+            max-height: 700px;
+            overflow-y: auto;
+        }
+
+        /* DANH SÁCH KHOA - CHI ĐOÀN */
+        .khoa-section {
+            margin-bottom: 25px;
+        }
+
+        .khoa-header {
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-bottom: 15px;
+        }
+
+        .khoa-header:hover {
+            background: #e2e8f0;
+        }
+
+        .khoa-header i.fa-chevron-down {
+            margin-left: auto;
+            transition: 0.3s;
+        }
+
+        .khoa-header.collapsed i.fa-chevron-down {
+            transform: rotate(-90deg);
+        }
+
+        .khoa-content {
+            padding-left: 15px;
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .khoa-content.collapsed {
+            max-height: 0;
+        }
+
+        .chidoan-section {
+            margin-bottom: 20px;
+            border-left: 3px solid var(--primary);
+            padding-left: 15px;
+        }
+
+        .chidoan-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .doanvien-item {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .doanvien-item:hover {
+            border-color: var(--primary);
+            background: #eff6ff;
+            transform: translateX(5px);
+        }
+
+        .doanvien-item.selected {
+            border-color: var(--primary);
+            background: #dbeafe;
+            box-shadow: 0 4px 6px rgba(55, 130, 245, 0.2);
+        }
+
+        .doanvien-info .name {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .doanvien-info .code {
+            font-size: 13px;
+            color: var(--secondary);
+        }
+
+        .btn-cap-so {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-cap-so:hover {
+            background: #16a34a;
+            transform: scale(1.05);
+        }
+
+        .btn-cap-so.updated {
+            background: var(--warning);
+        }
+
+        /* THÔNG TIN CHI TIẾT */
+        .detail-section {
+            margin-bottom: 30px;
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 20px;
+        }
+
+        .detail-header h3 {
+            color: #1e293b;
+            font-size: 18px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .info-label {
+            font-size: 13px;
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        .info-value {
+            font-size: 15px;
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--secondary);
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        /* BẢNG TIỂU SỬ */
+        .tieusu-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .tieusu-table th {
+            background: #f1f5f9;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #475569;
+            font-size: 13px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .tieusu-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+            color: #334155;
+        }
+
+        .tieusu-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success { background: #dcfce7; color: #15803d; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-danger { background: #fee2e2; color: #991b1b; }
+
+        /* MODAL FORM CẬP NHẬT SỔ ĐOÀN */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-close {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+
+        .btn-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(55, 130, 245, 0.1);
+        }
+
+        .form-group input:disabled {
+            background: #f1f5f9;
+            cursor: not-allowed;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .btn-save {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-save:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(55, 130, 245, 0.3);
+        }
+
+        .required { color: var(--danger); }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            color: #15803d;
+            border-left: 4px solid var(--success);
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid var(--danger);
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid var(--primary);
+        }
+
+        footer { text-align: center; padding: 20px; color: #94a3b8; font-size: 13px; margin-top: 40px; }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        @media (max-width: 968px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">
+            <i class="fa-solid fa-graduation-cap"></i>
+            Hệ Thống Quản Lý Đoàn
+        </div>
+        <div class="user-panel">
+            <span><i class="fa-solid fa-user-shield"></i> Admin Đoàn Trường</span>
+            <button onclick="window.location.href='pageLogin.html'">Đăng xuất</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>
+                <i class="fa-solid fa-book"></i>
+                Quản Lý Sổ Đoàn Viên
+            </h1>
+            <button class="btn-back" onclick="window.location.href='pageDashboard.html'">
+                <i class="fa-solid fa-arrow-left"></i>
+                Quay lại
+            </button>
+        </div>
+
+        <div id="messageBox"></div>
+
+        <div class="main-layout">
+            <!-- DANH SÁCH ĐOÀN VIÊN THEO KHOA - CHI ĐOÀN -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa-solid fa-list"></i>
+                    Danh Sách Đoàn Viên Theo Khoa
+                </div>
+                <div class="card-body" id="danhSachKhoa">
+                    <!-- Danh sách sẽ được load bằng JavaScript -->
+                </div>
+            </div>
+
+            <!-- THÔNG TIN CHI TIẾT ĐOÀN VIÊN -->
+            <div>
+                <div class="card" id="detailCard">
+                    <div class="card-header">
+                        <i class="fa-solid fa-user-circle"></i>
+                        Thông Tin Chi Tiết Đoàn Viên
+                    </div>
+                    <div class="card-body">
+                        <div class="empty-state" id="emptyState">
+                            <i class="fa-solid fa-hand-pointer"></i>
+                            <h3>Chọn Đoàn Viên</h3>
+                            <p>Vui lòng chọn đoàn viên từ danh sách bên trái để xem thông tin chi tiết</p>
+                        </div>
+
+                        <div id="detailContent" style="display: none;">
+                            <!-- THÔNG TIN ĐOÀN VIÊN -->
+                            <div class="detail-section">
+                                <div class="detail-header">
+                                    <i class="fa-solid fa-user"></i>
+                                    <h3>Thông Tin Cá Nhân</h3>
+                                </div>
+                                <div class="info-grid" id="thongTinDoanVien">
+                                    <!-- Thông tin sẽ được load -->
+                                </div>
+                            </div>
+
+                            <!-- TIỂU SỬ HOẠT ĐỘNG -->
+                            <div class="detail-section">
+                                <div class="detail-header">
+                                    <i class="fa-solid fa-history"></i>
+                                    <h3>Tiểu Sử Quá Trình Công Tác</h3>
+                                </div>
+                                <div id="tieuSuContent">
+                                    <!-- Bảng tiểu sử sẽ được load -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CẬP NHẬT SỔ ĐOÀN -->
+    <div class="modal" id="modalCapNhat">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>
+                    <i class="fa-solid fa-book-open"></i>
+                    Cập Nhật Sổ Đoàn
+                </h2>
+                <button class="btn-close" onclick="closeModal()">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <div>
+                        <strong>Đang cập nhật cho:</strong>
+                        <div id="tenDoanVienModal" style="margin-top: 5px;"></div>
+                    </div>
+                </div>
+
+                <form id="formSoDoan" onsubmit="handleSaveSoDoan(event)">
+                    <div class="form-group">
+                        <label>Mã Sổ Đoàn <span class="required">*</span></label>
+                        <input type="text" id="maSoDoan" readonly>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Mã Đoàn Viên <span class="required">*</span></label>
+                            <input type="text" id="maDV" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>Ngày Cấp <span class="required">*</span></label>
+                            <input type="date" id="ngayCap" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nơi Cấp <span class="required">*</span></label>
+                        <input type="text" id="noiCap" value="Đoàn trường ĐHSPKT" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ngày Rút Sổ</label>
+                        <input type="date" id="ngayRutSo">
+                    </div>
+
+                    <div class="form-group" id="lyDoRutSoGroup" style="display: none;">
+                        <label>Lý Do <span class="required">*</span></label>
+                        <select id="lyDoRutSo">
+                            <option value="">-- Chọn lý do --</option>
+                            <option value="Đã chuyển công tác">Đã chuyển công tác</option>
+                            <option value="Đã rút sổ">Đã rút sổ</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-save">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        Lưu Thông Tin Sổ Đoàn
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Hệ thống Quản lý Đoàn viên - Trường ĐHSPKT | Nhóm 37</p>
+    </footer>
+
+    <script>
+        // DỮ LIỆU MẪU
+        const khoaData = [
+            {
+                maKhoa: 'CNTT',
+                tenKhoa: 'Công Nghệ Thông Tin',
+                chiDoanList: [
+                    {
+                        maChiDoan: 'CD001',
+                        tenChiDoan: 'CNTT K20A',
+                        doanVienList: [
+                            { maDV: 'DV001', hoTen: 'Nguyễn Văn An', ngaySinh: '2000-01-15', gioiTinh: 'Nam', SDT: '0901234567', Email: 'annv@gmail.com' },
+                            { maDV: 'DV002', hoTen: 'Trần Thị Bình', ngaySinh: '2001-03-20', gioiTinh: 'Nữ', SDT: '0902345678', Email: 'binhtt@gmail.com' },
+                            { maDV: 'DV003', hoTen: 'Lê Văn Cường', ngaySinh: '2000-07-10', gioiTinh: 'Nam', SDT: '0903456789', Email: 'cuonglv@gmail.com' }
+                        ]
+                    },
+                    {
+                        maChiDoan: 'CD002',
+                        tenChiDoan: 'CNTT K20B',
+                        doanVienList: [
+                            { maDV: 'DV004', hoTen: 'Phạm Thị Dung', ngaySinh: '2001-05-25', gioiTinh: 'Nữ', SDT: '0904567890', Email: 'dungpt@gmail.com' },
+                            { maDV: 'DV005', hoTen: 'Hoàng Văn Em', ngaySinh: '2000-09-18', gioiTinh: 'Nam', SDT: '0905678901', Email: 'emhv@gmail.com' }
+                        ]
+                    }
+                ]
+            },
+            {
+                maKhoa: 'DT',
+                tenKhoa: 'Điện - Điện Tử',
+                chiDoanList: [
+                    {
+                        maChiDoan: 'CD003',
+                        tenChiDoan: 'Điện tử K19',
+                        doanVienList: [
+                            { maDV: 'DV006', hoTen: 'Vũ Thị Phương', ngaySinh: '1999-11-30', gioiTinh: 'Nữ', SDT: '0906789012', Email: 'phuongvt@gmail.com' },
+                            { maDV: 'DV007', hoTen: 'Đặng Văn Giang', ngaySinh: '2000-02-14', gioiTinh: 'Nam', SDT: '0907890123', Email: 'giangdv@gmail.com' }
+                        ]
+                    }
+                ]
+            },
+            {
+                maKhoa: 'CK',
+                tenKhoa: 'Cơ Khí',
+                chiDoanList: [
+                    {
+                        maChiDoan: 'CD004',
+                        tenChiDoan: 'Cơ khí K20',
+                        doanVienList: [
+                            { maDV: 'DV008', hoTen: 'Bùi Thị Hoa', ngaySinh: '2001-08-22', gioiTinh: 'Nữ', SDT: '0908901234', Email: 'hoabt@gmail.com' },
+                            { maDV: 'DV009', hoTen: 'Trương Văn Khải', ngaySinh: '2000-12-05', gioiTinh: 'Nam', SDT: '0909012345', Email: 'khaitv@gmail.com' }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        // DỮ LIỆU TIỂU SỬ MẪU
+        const tieuSuData = {
+            'DV001': [
+                { id_tieusu: 1, maDV: 'DV001', tuThoiGian: '2015-09-01', denThoiGian: '2018-06-15', donViCongTac: 'THCS Lê Quý Đôn', chuVu: 'Đoàn viên', trangThai: 'Đã chuyển công tác' },
+                { id_tieusu: 2, maDV: 'DV001', tuThoiGian: '2018-09-01', denThoiGian: '2021-06-20', donViCongTac: 'THPT Nguyễn Trãi', chuVu: 'Bí thư chi đoàn', trangThai: 'Đã chuyển công tác' },
+                { id_tieusu: 3, maDV: 'DV001', tuThoiGian: '2021-09-05', denThoiGian: null, donViCongTac: 'Đoàn trường ĐHSPKT', chuVu: 'Đoàn viên', trangThai: 'Đang hoạt động' }
+            ],
+            'DV002': [
+                { id_tieusu: 4, maDV: 'DV002', tuThoiGian: '2016-09-01', denThoiGian: '2019-06-10', donViCongTac: 'THCS Trần Hưng Đạo', chuVu: 'Đoàn viên', trangThai: 'Đã chuyển công tác' },
+                { id_tieusu: 5, maDV: 'DV002', tuThoiGian: '2019-09-01', denThoiGian: null, donViCongTac: 'ĐHSPKT', chuVu: 'Đoàn viên', trangThai: 'Đang hoạt động' }
+            ],
+            'DV003': [
+                { id_tieusu: 6, maDV: 'DV003', tuThoiGian: '2015-09-01', denThoiGian: '2018-05-20', donViCongTac: 'THPT Chu Văn An', chuVu: 'Phó bí thư', trangThai: 'Đã rút sổ' }
+            ],
+            'DV004': [
+                { id_tieusu: 7, maDV: 'DV004', tuThoiGian: '2017-09-01', denThoiGian: '2020-06-15', donViCongTac: 'THCS Lý Thường Kiệt', chuVu: 'Đoàn viên', trangThai: 'Đã chuyển công tác' },
+                { id_tieusu: 8, maDV: 'DV004', tuThoiGian: '2020-09-01', denThoiGian: '2021-12-30', donViCongTac: 'THPT Lê Lợi', chuVu: 'Bí thư chi đoàn', trangThai: 'Đã chuyển công tác' }
+            ],
+            'DV005': [
+                { id_tieusu: 10, maDV: 'DV005', tuThoiGian: '2016-09-01', denThoiGian: '2019-06-20', donViCongTac: 'THPT Hùng Vương', chuVu: 'Đoàn viên', trangThai: 'Đã chuyển công tác' }
+            ],
+            'DV006': [
+                { id_tieusu: 12, maDV: 'DV006', tuThoiGian: '2014-09-01', denThoiGian: '2017-06-10', donViCongTac: 'THCS Võ Thị Sáu', chuVu: 'Đoàn viên', trangThai: 'Đã chuyển công tác' },
+                { id_tieusu: 13, maDV: 'DV006', tuThoiGian: '2017-09-01', denThoiGian: '2020-05-30', donViCongTac: 'THPT Phan Chu Trinh', chuVu: 'Bí thư', trangThai: 'Đã chuyển công tác' },
+                { id_tieusu: 14, maDV: 'DV006', tuThoiGian: '2020-09-01', denThoiGian: null, donViCongTac: 'Đoàn trường ĐHSPKT', chuVu: 'Đoàn viên', trangThai: 'Đang hoạt động' }
+            ],
+            'DV007': [
+                { id_tieusu: 15, maDV: 'DV007', tuThoiGian: '2015-09-01', denThoiGian: '2018-06-15', donViCongTac: 'THCS Nguyễn Du', chuVu: 'Đoàn viên', trangThai: 'Đã chuyển công tác' }
+            ],
+            'DV008': [
+                { id_tieusu: 17, maDV: 'DV008', tuThoiGian: '2017-09-01', denThoiGian: '2020-06-20', donViCongTac: 'THPT Trần Phú', chuVu: 'Đoàn viên', trangThai: 'Đã rút sổ' }
+            ],
+            'DV009': [
+                { id_tieusu: 18, maDV: 'DV009', tuThoiGian: '2016-09-01', denThoiGian: '2019-05-30', donViCongTac: 'THCS Hai Bà Trưng', chuVu: 'Phó bí thư', trangThai: 'Đã chuyển công tác' }
+            ]
+        };
+
+        // DỮ LIỆU SỔ ĐOÀN ĐÃ CÓ
+        const existingSoDoan = {
+            'DV001': { maSoDoan: 'SD001', ngayCap: '2021-09-10', noiCap: 'Đoàn trường ĐHSPKT', trangThai: 'Đang hoạt động', ngayRutSo: null },
+            'DV002': { maSoDoan: 'SD002', ngayCap: '2019-09-05', noiCap: 'Đoàn trường ĐHSPKT', trangThai: 'Đang hoạt động', ngayRutSo: null },
+            'DV003': { maSoDoan: 'SD003', ngayCap: '2015-09-05', noiCap: 'Đoàn THPT Chu Văn An', trangThai: 'Đã rút sổ', ngayRutSo: '2018-05-20' },
+            'DV006': { maSoDoan: 'SD006', ngayCap: '2020-09-10', noiCap: 'Đoàn trường ĐHSPKT', trangThai: 'Đang hoạt động', ngayRutSo: null }
+        };
+
+        let selectedDoanVien = null;
+
+        // LOAD DANH SÁCH KHOA
+        window.onload = function() {
+            loadDanhSachKhoa();
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('ngayCap').value = today;
+
+            // Xử lý sự kiện thay đổi ngày rút sổ
+            document.getElementById('ngayRutSo').addEventListener('change', function() {
+                const lyDoGroup = document.getElementById('lyDoRutSoGroup');
+                const lyDoSelect = document.getElementById('lyDoRutSo');
+                
+                if (this.value) {
+                    lyDoGroup.style.display = 'block';
+                    lyDoSelect.required = true;
+                } else {
+                    lyDoGroup.style.display = 'none';
+                    lyDoSelect.required = false;
+                    lyDoSelect.value = '';
+                }
+            });
+        };
+
+        function loadDanhSachKhoa() {
+            const container = document.getElementById('danhSachKhoa');
+            
+            const html = khoaData.map(khoa => `
+                <div class="khoa-section">
+                    <div class="khoa-header" onclick="toggleKhoa(this)">
+                        <i class="fa-solid fa-building-columns"></i>
+                        <span>${khoa.tenKhoa}</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="khoa-content">
+                        ${khoa.chiDoanList.map(chiDoan => `
+                            <div class="chidoan-section">
+                                <div class="chidoan-title">
+                                    <i class="fa-solid fa-users"></i>
+                                    ${chiDoan.tenChiDoan}
+                                </div>
+                                ${chiDoan.doanVienList.map(dv => `
+                                    <div class="doanvien-item" onclick="selectDoanVien('${dv.maDV}')" id="item-${dv.maDV}">
+                                        <div class="doanvien-info">
+                                            <div class="name">${dv.hoTen}</div>
+                                            <div class="code"><i class="fa-solid fa-id-card"></i> ${dv.maDV}</div>
+                                        </div>
+                                        <button class="btn-cap-so ${existingSoDoan[dv.maDV] ? 'updated' : ''}" 
+                                                onclick="event.stopPropagation(); openModalCapNhat('${dv.maDV}')">
+                                            <i class="fa-solid fa-${existingSoDoan[dv.maDV] ? 'pen-to-square' : 'plus'}"></i>
+                                            ${existingSoDoan[dv.maDV] ? 'Cập nhật' : 'Cấp sổ'}
+                                        </button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        function toggleKhoa(element) {
+            const content = element.nextElementSibling;
+            element.classList.toggle('collapsed');
+            content.classList.toggle('collapsed');
+        }
+
+        function openModalCapNhat(maDV) {
+            // Tìm đoàn viên
+            let foundDV = null;
+            khoaData.forEach(khoa => {
+                khoa.chiDoanList.forEach(chiDoan => {
+                    const dv = chiDoan.doanVienList.find(d => d.maDV === maDV);
+                    if (dv) {
+                        foundDV = { ...dv, tenChiDoan: chiDoan.tenChiDoan, tenKhoa: khoa.tenKhoa };
+                    }
+                });
+            });
+
+            if (!foundDV) return;
+
+            selectedDoanVien = foundDV;
+
+            // Hiển thị thông tin đoàn viên trong modal
+            document.getElementById('tenDoanVienModal').innerHTML = `
+                <strong>${foundDV.hoTen}</strong> - ${foundDV.maDV}<br>
+                <small>${foundDV.tenChiDoan} - ${foundDV.tenKhoa}</small>
+            `;
+
+            // Điền thông tin vào form
+            document.getElementById('maSoDoan').value = 'SD' + maDV.substring(2);
+            document.getElementById('maDV').value = maDV;
+            
+            // Luôn set ngày cấp là ngày hiện tại và nơi cấp mặc định
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('ngayCap').value = today;
+            document.getElementById('noiCap').value = 'Đoàn trường ĐHSPKT';
+
+            // Nếu đã có sổ đoàn, load thông tin ngày rút sổ
+            if (existingSoDoan[maDV]) {
+                const soDoan = existingSoDoan[maDV];
+                document.getElementById('ngayRutSo').value = soDoan.ngayRutSo || '';
+                
+                if (soDoan.ngayRutSo) {
+                    document.getElementById('lyDoRutSoGroup').style.display = 'block';
+                    document.getElementById('lyDoRutSo').value = soDoan.trangThai;
+                }
+            } else {
+                document.getElementById('ngayRutSo').value = '';
+                document.getElementById('lyDoRutSoGroup').style.display = 'none';
+            }
+
+            // Hiển thị modal
+            document.getElementById('modalCapNhat').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('modalCapNhat').classList.remove('show');
+            document.getElementById('formSoDoan').reset();
+            selectedDoanVien = null;
+        }
+
+        // Đóng modal khi click bên ngoài
+        document.getElementById('modalCapNhat').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        function selectDoanVien(maDV) {
+            // Tìm đoàn viên
+            let foundDV = null;
+            khoaData.forEach(khoa => {
+                khoa.chiDoanList.forEach(chiDoan => {
+                    const dv = chiDoan.doanVienList.find(d => d.maDV === maDV);
+                    if (dv) {
+                        foundDV = { ...dv, tenChiDoan: chiDoan.tenChiDoan, tenKhoa: khoa.tenKhoa };
+                    }
+                });
+            });
+
+            if (!foundDV) return;
+
+            selectedDoanVien = foundDV;
+
+            // Highlight đoàn viên được chọn
+            document.querySelectorAll('.doanvien-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            document.getElementById(`item-${maDV}`).classList.add('selected');
+
+            // Hiển thị nội dung chi tiết
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('detailContent').style.display = 'block';
+
+            // Load thông tin đoàn viên
+            loadThongTinDoanVien();
+
+            // Load tiểu sử
+            loadTieuSu();
+        }
+
+        function loadThongTinDoanVien() {
+            const soDoan = existingSoDoan[selectedDoanVien.maDV];
+            const statusBadge = soDoan 
+                ? `<span class="badge badge-${soDoan.trangThai === 'Đang hoạt động' ? 'success' : 'warning'}">${soDoan.trangThai}</span>`
+                : '<span class="badge badge-danger">Chưa cấp sổ</span>';
+
+            const html = `
+                <div class="info-item">
+                    <div class="info-label">Mã Đoàn Viên</div>
+                    <div class="info-value">${selectedDoanVien.maDV}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Họ và Tên</div>
+                    <div class="info-value">${selectedDoanVien.hoTen}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Ngày Sinh</div>
+                    <div class="info-value">${new Date(selectedDoanVien.ngaySinh).toLocaleDateString('vi-VN')}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Giới Tính</div>
+                    <div class="info-value">${selectedDoanVien.gioiTinh}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Số Điện Thoại</div>
+                    <div class="info-value">${selectedDoanVien.SDT}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Email</div>
+                    <div class="info-value">${selectedDoanVien.Email}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Khoa</div>
+                    <div class="info-value">${selectedDoanVien.tenKhoa}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Chi Đoàn</div>
+                    <div class="info-value">${selectedDoanVien.tenChiDoan}</div>
+                </div>
+                <div class="info-item" style="grid-column: 1 / -1;">
+                    <div class="info-label">Trạng Thái Sổ Đoàn</div>
+                    <div class="info-value">${statusBadge}</div>
+                </div>
+                ${soDoan ? `
+                    <div class="info-item">
+                        <div class="info-label">Mã Sổ Đoàn</div>
+                        <div class="info-value">${soDoan.maSoDoan}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Ngày Cấp</div>
+                        <div class="info-value">${new Date(soDoan.ngayCap).toLocaleDateString('vi-VN')}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Nơi Cấp</div>
+                        <div class="info-value">${soDoan.noiCap}</div>
+                    </div>
+                    ${soDoan.ngayRutSo ? `
+                        <div class="info-item">
+                            <div class="info-label">Ngày Rút Sổ</div>
+                            <div class="info-value">${new Date(soDoan.ngayRutSo).toLocaleDateString('vi-VN')}</div>
+                        </div>
+                    ` : ''}
+                ` : ''}
+            `;
+            document.getElementById('thongTinDoanVien').innerHTML = html;
+        }
+
+        function loadTieuSu() {
+            const tieuSuList = tieuSuData[selectedDoanVien.maDV];
+            const hasSoDoan = existingSoDoan[selectedDoanVien.maDV];
+            
+            if (!tieuSuList || tieuSuList.length === 0) {
+                document.getElementById('tieuSuContent').innerHTML = `
+                    <p style="text-align: center; color: #94a3b8; padding: 30px;">
+                        <i class="fa-solid fa-inbox" style="font-size: 48px; margin-bottom: 15px; display: block; opacity: 0.3;"></i>
+                        Chưa có tiểu sử công tác
+                    </p>
+                `;
+                return;
+            }
+
+            // Sắp xếp tiểu sử: Mới nhất lên đầu
+            const sortedTieuSu = [...tieuSuList].sort((a, b) => {
+                return new Date(b.tuThoiGian) - new Date(a.tuThoiGian);
+            });
+
+            const html = `
+                <table class="tieusu-table">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Từ Thời Gian</th>
+                            <th>Đến Thời Gian</th>
+                            <th>Đơn Vị Công Tác</th>
+                            <th>Chức Vụ</th>
+                            <th>Trạng Thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${sortedTieuSu.map((ts, index) => {
+                            let badgeClass = 'badge-success';
+                            let badgeText = ts.trangThai;
+                            
+                            if (ts.trangThai === 'Đã chuyển công tác') {
+                                badgeClass = 'badge-warning';
+                            } else if (ts.trangThai === 'Đã rút sổ') {
+                                badgeClass = 'badge-danger';
+                            }
+                            
+                            // Chỉ hiển thị "Hiện tại" nếu đã có sổ đoàn và đang hoạt động
+                            const isCurrentActive = !ts.denThoiGian && ts.trangThai === 'Đang hoạt động' && hasSoDoan;
+                            
+                            return `
+                                <tr>
+                                    <td>${index + 1}</td>
+                                    <td>${new Date(ts.tuThoiGian).toLocaleDateString('vi-VN')}</td>
+                                    <td>${isCurrentActive ? '<strong>Hiện tại</strong>' : (ts.denThoiGian ? new Date(ts.denThoiGian).toLocaleDateString('vi-VN') : 'Chưa kết thúc')}</td>
+                                    <td><strong>${ts.donViCongTac}</strong></td>
+                                    <td>${ts.chuVu}</td>
+                                    <td><span class="badge ${badgeClass}">${badgeText}</span></td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+            document.getElementById('tieuSuContent').innerHTML = html;
+        }
+
+        function handleSaveSoDoan(event) {
+            event.preventDefault();
+
+            if (!selectedDoanVien) {
+                showMessage('error', 'Vui lòng chọn đoàn viên!');
+                return;
+            }
+
+            const ngayRutSo = document.getElementById('ngayRutSo').value;
+            const lyDoRutSo = document.getElementById('lyDoRutSo').value;
+
+            // Validate lý do khi có ngày rút sổ
+            if (ngayRutSo && !lyDoRutSo) {
+                showMessage('error', 'Vui lòng chọn lý do rút sổ!');
+                return;
+            }
+
+            // Xác định trạng thái tự động
+            let trangThai = 'Đang hoạt động';
+            if (ngayRutSo) {
+                trangThai = lyDoRutSo;
+            }
+
+            const isFirstTime = !existingSoDoan[selectedDoanVien.maDV];
+            const ngayCapMoi = document.getElementById('ngayCap').value;
+
+            const formData = {
+                maSoDoan: document.getElementById('maSoDoan').value,
+                maDV: selectedDoanVien.maDV,
+                ngayCap: ngayCapMoi,
+                noiCap: document.getElementById('noiCap').value,
+                trangThai: trangThai,
+                ngayRutSo: ngayRutSo || null
+            };
+
+            // SQL Query mẫu
+            const sqlQuery = `
+INSERT INTO SoDoan (maSoDoan, maDV, ngayCap, noiCap, trangThai, ngayRutSo)
+VALUES ('${formData.maSoDoan}', '${formData.maDV}', '${formData.ngayCap}', 
+        '${formData.noiCap}', '${formData.trangThai}', ${formData.ngayRutSo ? "'" + formData.ngayRutSo + "'" : 'NULL'})
+ON DUPLICATE KEY UPDATE 
+    ngayCap = '${formData.ngayCap}',
+    noiCap = '${formData.noiCap}',
+    trangThai = '${formData.trangThai}',
+    ngayRutSo = ${formData.ngayRutSo ? "'" + formData.ngayRutSo + "'" : 'NULL'};
+            `;
+            
+            console.log('=== CẬP NHẬT SỔ ĐOÀN ===');
+            console.log('Form Data:', formData);
+            console.log('SQL Query:', sqlQuery);
+
+            // Nếu lần đầu cấp sổ, tự động thêm tiểu sử mới
+            if (isFirstTime) {
+                if (!tieuSuData[formData.maDV]) {
+                    tieuSuData[formData.maDV] = [];
+                }
+                
+                const newTieuSu = {
+                    id_tieusu: Date.now(),
+                    maDV: formData.maDV,
+                    tuThoiGian: ngayCapMoi,
+                    denThoiGian: null,
+                    donViCongTac: 'Đoàn trường ĐHSPKT',
+                    chuVu: 'Đoàn viên',
+                    trangThai: 'Đang hoạt động'
+                };
+                
+                tieuSuData[formData.maDV].push(newTieuSu);
+                
+                const tieuSuSQL = `
+INSERT INTO TieuSu (maDV, tuThoiGian, denThoiGian, donViCongTac, chuVu, trangThai)
+VALUES ('${newTieuSu.maDV}', '${newTieuSu.tuThoiGian}', NULL, 
+        '${newTieuSu.donViCongTac}', '${newTieuSu.chuVu}', '${newTieuSu.trangThai}');
+                `;
+                console.log('SQL Tiểu Sử Mới:', tieuSuSQL);
+            }
+
+            console.log('========================');
+
+            // Cập nhật data giả lập
+            existingSoDoan[formData.maDV] = formData;
+
+            // Reload danh sách
+            loadDanhSachKhoa();
+
+            // Đóng modal
+            closeModal();
+
+            // Hiển thị thông báo
+            const action = isFirstTime ? 'Cấp sổ đoàn' : 'Cập nhật sổ đoàn';
+            showMessage('success', `✅ ${action} thành công cho đoàn viên ${selectedDoanVien.hoTen}! Trạng thái: ${trangThai}`);
+
+            // Nếu đang xem đoàn viên này, reload thông tin
+            if (document.getElementById('detailContent').style.display !== 'none') {
+                loadThongTinDoanVien();
+                loadTieuSu();
+            }
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showMessage(type, text) {
+            const messageBox = document.getElementById('messageBox');
+            const iconMap = {
+                'success': 'fa-circle-check',
+                'error': 'fa-circle-xmark'
+            };
+
+            messageBox.innerHTML = `
+                <div class="alert alert-${type}">
+                    <i class="fa-solid ${iconMap[type]}"></i>
+                    ${text}
+                </div>
+            `;
+
+            setTimeout(() => {
+                messageBox.innerHTML = '';
+            }, 5000);
+        }
+    </script>
+
+</body>
+</html>

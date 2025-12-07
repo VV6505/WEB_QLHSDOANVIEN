@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UC4: Thống kê & Báo cáo - Đoàn trường</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #e53935 0%, #c62828 100%);
+            color: white;
+            padding: 20px 40px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid white;
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: white;
+            color: #e53935;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 48px;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }
+
+        .stat-icon.blue {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+        }
+
+        .stat-icon.green {
+            background: linear-gradient(135deg, #4CAF50, #388E3C);
+        }
+
+        .stat-icon.orange {
+            background: linear-gradient(135deg, #FF9800, #F57C00);
+        }
+
+        .stat-icon.red {
+            background: linear-gradient(135deg, #e53935, #c62828);
+        }
+
+        .stat-info h3 {
+            color: #999;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .stat-info .number {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .filters-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .filters-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filters-header h2 {
+            font-size: 20px;
+            color: #333;
+        }
+
+        .btn-export {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-export:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: #e53935;
+        }
+
+        .charts-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-card h3 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 100%;
+            gap: 10px;
+        }
+
+        .bar {
+            flex: 1;
+            background: linear-gradient(180deg, #e53935, #c62828);
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .bar:hover {
+            opacity: 0.8;
+            transform: translateY(-5px);
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #666;
+            white-space: nowrap;
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .pie-chart {
+            width: 250px;
+            height: 250px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .pie-slice {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .table-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        .table-section h3 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f5f5f5;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #555;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #666;
+        }
+
+        tr:hover {
+            background: #f9f9f9;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-high {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .badge-medium {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .badge-low {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        @media (max-width: 768px) {
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>📊 Thống kê & Báo cáo</h1>
+            <div class="user-info">
+                <span>Xin chào, <strong>Đoàn trường</strong></span>
+                <button class="btn-logout" onclick="logout()">Đăng xuất</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Stats Overview -->
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-icon blue">📅</div>
+                <div class="stat-info">
+                    <h3>Tổng hoạt động</h3>
+                    <div class="number" id="totalActivities">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">👥</div>
+                <div class="stat-info">
+                    <h3>Tổng lượt tham gia</h3>
+                    <div class="number" id="totalParticipants">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange">⏰</div>
+                <div class="stat-info">
+                    <h3>Đang diễn ra</h3>
+                    <div class="number" id="activeActivities">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon red">📈</div>
+                <div class="stat-info">
+                    <h3>Tỷ lệ tham gia</h3>
+                    <div class="number" id="participationRate">0%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <div class="filters-header">
+                <h2>🔍 Lọc & Tìm kiếm</h2>
+                <button class="btn-export" onclick="exportReport()">📥 Xuất báo cáo PDF</button>
+            </div>
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label>Từ ngày</label>
+                    <input type="date" id="fromDate" onchange="filterData()">
+                </div>
+                <div class="filter-group">
+                    <label>Đến ngày</label>
+                    <input type="date" id="toDate" onchange="filterData()">
+                </div>
+                <div class="filter-group">
+                    <label>Trạng thái</label>
+                    <select id="statusFilter" onchange="filterData()">
+                        <option value="all">Tất cả</option>
+                        <option value="upcoming">Sắp diễn ra</option>
+                        <option value="active">Đang diễn ra</option>
+                        <option value="ended">Đã kết thúc</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Tìm kiếm</label>
+                    <input type="text" id="searchInput" placeholder="Tên hoạt động..." onkeyup="filterData()">
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-section">
+            <div class="chart-card">
+                <h3>📊 Số lượng người tham gia theo hoạt động</h3>
+                <div class="chart-container">
+                    <div class="bar-chart" id="barChart"></div>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3>🥧 Phân bố trạng thái hoạt động</h3>
+                <div class="chart-container">
+                    <canvas id="pieChart" width="250" height="250" style="margin: 0 auto; display: block;"></canvas>
+                </div>
+                <div class="legend" id="legend"></div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-section">
+            <h3>📋 Chi tiết hoạt động</h3>
+            <table id="detailsTable">
+                <thead>
+                    <tr>
+                        <th>Tên hoạt động</th>
+                        <th>Ngày</th>
+                        <th>Địa điểm</th>
+                        <th>Số người tham gia</th>
+                        <th>Tỷ lệ</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Dữ liệu mẫu
+        let activities = [
+            {
+                id: 1,
+                name: 'Hiến máu nhân đạo',
+                date: '2025-12-15',
+                location: 'Hội trường A',
+                maxParticipants: 100,
+                currentParticipants: 85,
+                status: 'upcoming'
+            },
+            {
+                id: 2,
+                name: 'Trồng cây xanh',
+                date: '2025-12-10',
+                location: 'Sân trường',
+                maxParticipants: 50,
+                currentParticipants: 48,
+                status: 'active'
+            },
+            {
+                id: 3,
+                name: 'Tình nguyện mùa hè',
+                date: '2025-11-20',
+                location: 'Vùng cao',
+                maxParticipants: 30,
+                currentParticipants: 28,
+                status: 'ended'
+            },
+            {
+                id: 4,
+                name: 'Dọn dẹp bãi biển',
+                date: '2025-12-18',
+                location: 'Bãi biển Đà Nẵng',
+                maxParticipants: 80,
+                currentParticipants: 72,
+                status: 'upcoming'
+            },
+            {
+                id: 5,
+                name: 'Hỗ trợ học sinh nghèo',
+                date: '2025-11-25',
+                location: 'Trường THCS Liên Chiểu',
+                maxParticipants: 40,
+                currentParticipants: 35,
+                status: 'ended'
+            }
+        ];
+
+        let filteredActivities = [...activities];
+
+        // Update stats
+        function updateStats() {
+            const total = filteredActivities.length;
+            const totalParts = filteredActivities.reduce((sum, a) => sum + a.currentParticipants, 0);
+            const active = filteredActivities.filter(a => a.status === 'active').length;
+            const maxParts = filteredActivities.reduce((sum, a) => sum + a.maxParticipants, 0);
+            const rate = maxParts > 0 ? Math.round((totalParts / maxParts) * 100) : 0;
+
+            document.getElementById('totalActivities').textContent = total;
+            document.getElementById('totalParticipants').textContent = totalParts;
+            document.getElementById('activeActivities').textContent = active;
+            document.getElementById('participationRate').textContent = rate + '%';
+        }
+
+        // Draw bar chart
+        function drawBarChart() {
+            const container = document.getElementById('barChart');
+            const maxHeight = 250;
+            const maxValue = Math.max(...filteredActivities.map(a => a.currentParticipants), 1);
+
+            container.innerHTML = filteredActivities.map(activity => {
+                const height = (activity.currentParticipants / maxValue) * maxHeight;
+                return `
+                    <div class="bar" style="height: ${height}px;" title="${activity.name}: ${activity.currentParticipants} người">
+                        <div class="bar-value">${activity.currentParticipants}</div>
+                        <div class="bar-label">${activity.name.substring(0, 15)}...</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Draw pie chart
+        function drawPieChart() {
+            const canvas = document.getElementById('pieChart');
+            const ctx = canvas.getContext('2d');
+            const centerX = 125;
+            const centerY = 125;
+            const radius = 100;
+
+            const statusCounts = {
+                upcoming: filteredActivities.filter(a => a.status === 'upcoming').length,
+                active: filteredActivities.filter(a => a.status === 'active').length,
+                ended: filteredActivities.filter(a => a.status === 'ended').length
+            };
+
+            const total = Object.values(statusCounts).reduce((sum, val) => sum + val, 0);
+            if (total === 0) return;
+
+            const colors = {
+                upcoming: '#FF9800',
+                active: '#4CAF50',
+                ended: '#e53935'
+            };
+
+            const labels = {
+                upcoming: 'Sắp diễn ra',
+                active: 'Đang diễn ra',
+                ended: 'Đã kết thúc'
+            };
+
+            let startAngle = -0.5 * Math.PI;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            Object.keys(statusCounts).forEach(status => {
+                const count = statusCounts[status];
+                const sliceAngle = (count / total) * 2 * Math.PI;
+
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, startAngle + sliceAngle);
+                ctx.closePath();
+                ctx.fillStyle = colors[status];
+                ctx.fill();
+
+                startAngle += sliceAngle;
+            });
+
+            // Draw legend
+            const legend = document.getElementById('legend');
+            legend.innerHTML = Object.keys(statusCounts).map(status => `
+                <div class="legend-item">
+                    <div class="legend-color" style="background: ${colors[status]}"></div>
+                    <span>${labels[status]}: ${statusCounts[status]}</span>
+                </div>
+            `).join('');
+        }
+
+        // Draw table
+        function drawTable() {
+            const tbody = document.getElementById('tableBody');
+            
+            tbody.innerHTML = filteredActivities.map(activity => {
+                const rate = Math.round((activity.currentParticipants / activity.maxParticipants) * 100);
+                let rateBadge = 'badge-low';
+                if (rate >= 80) rateBadge = 'badge-high';
+                else if (rate >= 50) rateBadge = 'badge-medium';
+
+                const statusText = {
+                    upcoming: 'Sắp diễn ra',
+                    active: 'Đang diễn ra',
+                    ended: 'Đã kết thúc'
+                };
+
+                return `
+                    <tr>
+                        <td><strong>${activity.name}</strong></td>
+                        <td>${formatDate(activity.date)}</td>
+                        <td>${activity.location}</td>
+                        <td>${activity.currentParticipants}/${activity.maxParticipants}</td>
+                        <td><span class="badge ${rateBadge}">${rate}%</span></td>
+                        <td>${statusText[activity.status]}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('vi-VN', { 
+                day: '2-digit', 
+                month: '2-digit', 
+                year: 'numeric' 
+            });
+        }
+
+        // Filter data
+        function filterData() {
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+            const status = document.getElementById('statusFilter').value;
+            const search = document.getElementById('searchInput').value.toLowerCase();
+
+            filteredActivities = activities.filter(activity => {
+                let match = true;
+
+                if (fromDate && activity.date < fromDate) match = false;
+                if (toDate && activity.date > toDate) match = false;
+                if (status !== 'all' && activity.status !== status) match = false;
+                if (search && !activity.name.toLowerCase().includes(search)) match = false;
+
+                return match;
+            });
+
+            updateAll();
+        }
+
+        // Update all
+        function updateAll() {
+            updateStats();
+            drawBarChart();
+            drawPieChart();
+            drawTable();
+        }
+
+        // Export report
+        function exportReport() {
+            const reportContent = `
+==============================================
+          BÁO CÁO HOẠT ĐỘNG ĐOÀN
+==============================================
+
+Thời gian: ${new Date().toLocaleString('vi-VN')}
+
+TỔNG QUAN:
+- Tổng số hoạt động: ${filteredActivities.length}
+- Tổng lượt tham gia: ${filteredActivities.reduce((sum, a) => sum + a.currentParticipants, 0)}
+- Đang diễn ra: ${filteredActivities.filter(a => a.status === 'active').length}
+
+CHI TIẾT HOẠT ĐỘNG:
+${filteredActivities.map((a, i) => `
+${i + 1}. ${a.name}
+   - Ngày: ${formatDate(a.date)}
+   - Địa điểm: ${a.location}
+   - Người tham gia: ${a.currentParticipants}/${a.maxParticipants}
+   - Tỷ lệ: ${Math.round((a.currentParticipants / a.maxParticipants) * 100)}%
+`).join('')}
+
+==============================================
+            `;
+
+            const blob = new Blob([reportContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `bao-cao-hoat-dong-${new Date().toISOString().slice(0, 10)}.txt`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+
+            alert('✅ Đã xuất báo cáo thành công!');
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Bạn có chắc muốn đăng xuất?')) {
+                alert('Đã đăng xuất thành công!');
+                // window.location.href = 'uc1_dang_nhap.html';
+            }
+        }
+
+        // Set default dates
+        document.getElementById('toDate').value = new Date().toISOString().slice(0, 10);
+        const fromDate = new Date();
+        fromDate.setMonth(fromDate.getMonth() - 1);
+        document.getElementById('fromDate').value = fromDate.toISOString().slice(0, 10);
+
+        // Initialize
+        filterData();
+    </script>
+</body>
+</html>

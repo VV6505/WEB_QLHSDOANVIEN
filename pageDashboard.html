@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảng Điều Khiển - Admin Đoàn Trường</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3782f5;
+            --primary-dark: #2563eb;
+            --secondary: #64748b;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--bg); min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* HEADER */
+        header { 
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
+            color: white; 
+            padding: 15px 40px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 4px 10px rgba(55, 130, 245, 0.2);
+        }
+        .brand { display: flex; align-items: center; gap: 12px; font-size: 20px; font-weight: 700; }
+        .user-panel button { 
+            background: rgba(255,255,255,0.2); 
+            color: white; 
+            border: 1px solid rgba(255,255,255,0.4); 
+            padding: 8px 16px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            font-weight: 600;
+        }
+        .user-panel button:hover { background: white; color: var(--primary); }
+
+        .container { 
+            max-width: 1200px; 
+            margin: 40px auto; 
+            padding: 0 20px; 
+            flex: 1; 
+        }
+
+        .welcome-banner {
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            border-left: 5px solid var(--primary);
+        }
+        .welcome-banner h2 { color: #1e293b; margin-bottom: 5px; }
+        .welcome-banner p { color: var(--secondary); }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .menu-card {
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border: 1px solid transparent;
+            text-decoration: none; /* Bỏ gạch chân thẻ a */
+            color: inherit;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px -5px rgba(0,0,0,0.1);
+            border-color: var(--primary);
+        }
+
+        .icon-box {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        /* Màu sắc riêng cho từng card */
+        .card-qlsv .icon-box { background: #eff6ff; color: #3b82f6; }
+        .card-qlsv:hover .icon-box { background: #3b82f6; color: white; }
+
+        .card-hd .icon-box { background: #fef2f2; color: #ef4444; }
+        .card-hd:hover .icon-box { background: #ef4444; color: white; }
+
+        .card-phi .icon-box { background: #f0fdf4; color: #22c55e; }
+        .card-phi:hover .icon-box { background: #22c55e; color: white; }
+
+        .card-sodoan .icon-box { background: #f5eedb; color: #e7b62e; }
+        .card-sodoan:hover .icon-box { background: #e7b62e; color: white; }
+
+        .card-title { font-size: 20px; font-weight: 700; color: #334155; margin-bottom: 10px; }
+        .card-desc { font-size: 14px; color: #64748b; line-height: 1.5; }
+
+        footer { text-align: center; padding: 20px; color: #94a3b8; font-size: 13px; margin-top: auto; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">
+            <i class="fa-solid fa-graduation-cap"></i>
+            Hệ Thống Quản Lý Đoàn
+        </div>
+        <div class="user-panel">
+            <span style="margin-right: 15px;">👤 Admin Đoàn Trường</span>
+            <button onclick="window.location.href='pageLogin.html'">Đăng xuất</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="welcome-banner">
+            <h2>Xin chào, Đoàn Trường 👋</h2>
+            <p>Chào mừng quay trở lại. Hãy chọn một chức năng bên dưới để bắt đầu làm việc.</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <a href="pageQLSV.html" class="menu-card card-qlsv">
+                <div class="icon-box"><i class="fa-solid fa-users"></i></div>
+                <div class="card-title">Quản Lý Đoàn Viên</div>
+                <p class="card-desc">Xem danh sách theo Khoa/Lớp, cập nhật thông tin cá nhân, chuyển sinh hoạt đoàn.</p>
+            </a>
+
+            <a href="pageCapNhatHoatDong.html" class="menu-card card-hd">
+                <div class="icon-box"><i class="fa-solid fa-calendar-check"></i></div>
+                <div class="card-title">Quản Lý Hoạt Động</div>
+                <p class="card-desc">Tạo hoạt động mới, cập nhật điểm rèn luyện, theo dõi số lượng đăng ký tham gia.</p>
+            </a>
+
+            <a href="pageQuanLyDoanPhi.html" class="menu-card card-phi">
+                <div class="icon-box"><i class="fa-solid fa-coins"></i></div>
+                <div class="card-title">Quản Lý Đoàn Phí</div>
+                <p class="card-desc">Theo dõi tình hình đóng đoàn phí của các chi đoàn, xuất báo cáo tài chính.</p>
+            </a>
+
+            <a href="pageCapNhatSoDoan.html" class="menu-card card-sodoan">
+                <div class="icon-box"><i class="fa-solid fa-book"></i></div>
+                <div class="card-title">Cập Nhật Sổ Đoàn</div>
+                <p class="card-desc">Cấp sổ đoàn mới cho đoàn viên, quản lý trạng thái sổ đoàn.</p>
+            </a>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Hệ thống Quản lý Đoàn viên - Trường ĐHSPKT | Nhóm 37</p>
+    </footer>
+
+</body>
+</html>

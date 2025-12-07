@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UC3: Đăng ký Hoạt động - Đoàn viên</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #e53935 0%, #c62828 100%);
+            color: white;
+            padding: 20px 40px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid white;
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: white;
+            color: #e53935;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            background: white;
+            padding: 20px 25px;
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .count-badge {
+            background: linear-gradient(135deg, #e53935 0%, #c62828 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding: 10px 40px 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            width: 300px;
+            font-size: 14px;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #e53935;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8f9fa;
+        }
+
+        th {
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+            border-bottom: 2px solid #e0e0e0;
+            white-space: nowrap;
+        }
+
+        th:first-child {
+            padding-left: 25px;
+        }
+
+        th:last-child {
+            padding-right: 25px;
+            text-align: center;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        td {
+            padding: 18px 15px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        td:first-child {
+            padding-left: 25px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        td:last-child {
+            padding-right: 25px;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-active {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .badge-upcoming {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .badge-full {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .badge-available {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .participants {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .progress-mini {
+            width: 60px;
+            height: 6px;
+            background: #f0f0f0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-mini-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            transition: width 0.3s;
+        }
+
+        .btn-register {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-register:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-cancel {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cancel:hover {
+            background: #da190b;
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state .icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .registered-mark {
+            color: #4CAF50;
+            font-size: 18px;
+        }
+
+        @media (max-width: 1200px) {
+            .table-container {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 900px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>🎓 Hoạt động Đoàn</h1>
+            <div class="user-info">
+                <span>Xin chào, <strong>Đoàn viên</strong></span>
+                <button class="btn-logout" onclick="logout()">Đăng xuất</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Bảng 1: Danh sách hoạt động có thể đăng ký -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    📋 Danh sách hoạt động
+                    <span class="count-badge" id="availableCount">0</span>
+                </div>
+                <div class="search-box">
+                    <input type="text" id="searchAvailable" placeholder="Tìm kiếm hoạt động..." onkeyup="filterAvailableActivities()">
+                    <span class="search-icon">🔍</span>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tên hoạt động</th>
+                            <th>Ngày tổ chức</th>
+                            <th>Địa điểm</th>
+                            <th>Số người tham gia</th>
+                            <th>Mô tả</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="availableTableBody">
+                        <!-- Available activities will be rendered here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Bảng 2: Danh sách hoạt động đã đăng ký -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    ✅ Hoạt động đã đăng ký
+                    <span class="count-badge" id="registeredCount">0</span>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tên hoạt động</th>
+                            <th>Ngày tổ chức</th>
+                            <th>Địa điểm</th>
+                            <th>Số người tham gia</th>
+                            <th>Mô tả</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="registeredTableBody">
+                        <!-- Registered activities will be rendered here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dữ liệu mẫu - Tất cả hoạt động
+        let allActivities = [
+            {
+                id: 1,
+                name: 'Hiến máu nhân đạo',
+                date: '2025-12-15',
+                location: 'Hội trường A',
+                maxParticipants: 100,
+                currentParticipants: 85,
+                description: 'Chương trình hiến máu tình nguyện',
+                status: 'upcoming'
+            },
+            {
+                id: 2,
+                name: 'Trồng cây xanh',
+                date: '2025-12-10',
+                location: 'Sân trường',
+                maxParticipants: 50,
+                currentParticipants: 48,
+                description: 'Hoạt động trồng cây, bảo vệ môi trường',
+                status: 'active'
+            },
+            {
+                id: 3,
+                name: 'Tình nguyện mùa đông',
+                date: '2025-12-20',
+                location: 'Vùng cao',
+                maxParticipants: 30,
+                currentParticipants: 15,
+                description: 'Chương trình tình nguyện đông',
+                status: 'upcoming'
+            },
+            {
+                id: 4,
+                name: 'Dọn dẹp bãi biển',
+                date: '2025-12-18',
+                location: 'Bãi biển Đà Nẵng',
+                maxParticipants: 80,
+                currentParticipants: 60,
+                description: 'Vệ sinh môi trường biển',
+                status: 'upcoming'
+            },
+            {
+                id: 5,
+                name: 'Hỗ trợ học sinh nghèo',
+                date: '2025-12-22',
+                location: 'Trường THCS Liên Chiểu',
+                maxParticipants: 40,
+                currentParticipants: 25,
+                description: 'Tặng học bổng cho học sinh',
+                status: 'upcoming'
+            },
+            {
+                id: 6,
+                name: 'Ngày hội thể thao',
+                date: '2025-12-25',
+                location: 'Sân vận động',
+                maxParticipants: 200,
+                currentParticipants: 150,
+                description: 'Giải bóng đá giao hữu',
+                status: 'upcoming'
+            }
+        ];
+
+        // Danh sách đã đăng ký
+        let registeredActivityIds = [];
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('vi-VN', { 
+                day: '2-digit', 
+                month: '2-digit', 
+                year: 'numeric' 
+            });
+        }
+
+        // Get available activities (chưa đăng ký)
+        function getAvailableActivities() {
+            return allActivities.filter(a => !registeredActivityIds.includes(a.id));
+        }
+
+        // Get registered activities (đã đăng ký)
+        function getRegisteredActivities() {
+            return allActivities.filter(a => registeredActivityIds.includes(a.id));
+        }
+
+        // Render available activities table
+        function renderAvailableTable(data = null) {
+            const tbody = document.getElementById('availableTableBody');
+            const activities = data || getAvailableActivities();
+            
+            document.getElementById('availableCount').textContent = activities.length;
+
+            if (activities.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <div class="icon">✨</div>
+                                <h3>Không có hoạt động nào</h3>
+                                <p>Bạn đã đăng ký tất cả hoặc không tìm thấy hoạt động phù hợp</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            const statusBadge = {
+                'upcoming': '<span class="badge badge-upcoming">Sắp diễn ra</span>',
+                'active': '<span class="badge badge-active">Đang diễn ra</span>'
+            };
+
+            tbody.innerHTML = activities.map(activity => {
+                const progress = (activity.currentParticipants / activity.maxParticipants) * 100;
+                const isFull = activity.currentParticipants >= activity.maxParticipants;
+                const availabilityBadge = isFull 
+                    ? '<span class="badge badge-full">Đã đầy</span>'
+                    : '<span class="badge badge-available">Còn chỗ</span>';
+                
+                return `
+                    <tr>
+                        <td>${activity.name}</td>
+                        <td>${formatDate(activity.date)}</td>
+                        <td>${activity.location}</td>
+                        <td>
+                            <div class="participants">
+                                <span>${activity.currentParticipants}/${activity.maxParticipants}</span>
+                                <div class="progress-mini">
+                                    <div class="progress-mini-fill" style="width: ${progress}%"></div>
+                                </div>
+                                ${availabilityBadge}
+                            </div>
+                        </td>
+                        <td>${activity.description}</td>
+                        <td>${statusBadge[activity.status]}</td>
+                        <td>
+                            <button class="btn-register" onclick="registerActivity(${activity.id})" ${isFull ? 'disabled' : ''}>
+                                ${isFull ? '❌ Đã đầy' : '➕ Đăng ký'}
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Render registered activities table
+        function renderRegisteredTable() {
+            const tbody = document.getElementById('registeredTableBody');
+            const activities = getRegisteredActivities();
+            
+            document.getElementById('registeredCount').textContent = activities.length;
+
+            if (activities.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <div class="icon">📋</div>
+                                <h3>Chưa đăng ký hoạt động nào</h3>
+                                <p>Hãy đăng ký các hoạt động ở bảng phía trên</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            const statusBadge = {
+                'upcoming': '<span class="badge badge-upcoming">Sắp diễn ra</span>',
+                'active': '<span class="badge badge-active">Đang diễn ra</span>'
+            };
+
+            tbody.innerHTML = activities.map(activity => {
+                const progress = (activity.currentParticipants / activity.maxParticipants) * 100;
+                
+                return `
+                    <tr>
+                        <td>
+                            <span class="registered-mark">✓</span> ${activity.name}
+                        </td>
+                        <td>${formatDate(activity.date)}</td>
+                        <td>${activity.location}</td>
+                        <td>
+                            <div class="participants">
+                                <span>${activity.currentParticipants}/${activity.maxParticipants}</span>
+                                <div class="progress-mini">
+                                    <div class="progress-mini-fill" style="width: ${progress}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${activity.description}</td>
+                        <td>${statusBadge[activity.status]}</td>
+                        <td>
+                            <button class="btn-cancel" onclick="cancelRegistration(${activity.id})">
+                                ❌ Hủy đăng ký
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Register activity
+        function registerActivity(id) {
+            const activity = allActivities.find(a => a.id === id);
+            if (!activity) return;
+
+            if (activity.currentParticipants >= activity.maxParticipants) {
+                alert('❌ Hoạt động đã đầy! Không thể đăng ký.');
+                return;
+            }
+
+            // Tăng số người tham gia
+            activity.currentParticipants++;
+            
+            // Thêm vào danh sách đã đăng ký
+            registeredActivityIds.push(id);
+            
+            // Render lại cả 2 bảng
+            renderAvailableTable();
+            renderRegisteredTable();
+            
+            alert(`✅ Đăng ký thành công!\nBạn đã đăng ký hoạt động: ${activity.name}`);
+        }
+
+        // Cancel registration
+        function cancelRegistration(id) {
+            if (!confirm('Bạn có chắc muốn hủy đăng ký hoạt động này?')) return;
+
+            const activity = allActivities.find(a => a.id === id);
+            if (!activity) return;
+
+            // Giảm số người tham gia
+            activity.currentParticipants--;
+            
+            // Xóa khỏi danh sách đã đăng ký
+            registeredActivityIds = registeredActivityIds.filter(aId => aId !== id);
+            
+            // Render lại cả 2 bảng
+            renderAvailableTable();
+            renderRegisteredTable();
+            
+            alert(`✅ Đã hủy đăng ký hoạt động: ${activity.name}`);
+        }
+
+        // Filter available activities
+        function filterAvailableActivities() {
+            const searchTerm = document.getElementById('searchAvailable').value.toLowerCase();
+            const available = getAvailableActivities();
+            
+            const filtered = available.filter(activity => 
+                activity.name.toLowerCase().includes(searchTerm) ||
+                activity.location.toLowerCase().includes(searchTerm) ||
+                activity.description.toLowerCase().includes(searchTerm)
+            );
+            
+            renderAvailableTable(filtered);
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Bạn có chắc muốn đăng xuất?')) {
+                alert('Đã đăng xuất thành công!');
+                window.location.href = 'pageLogin.html';
+            }
+        }
+
+        // Initialize
+        renderAvailableTable();
+        renderRegisteredTable();
+    </script>
+</body>
+</html>
