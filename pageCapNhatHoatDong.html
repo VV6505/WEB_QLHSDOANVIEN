@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý Hoạt động - Đoàn trường ĐH SPKT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
         <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; }
@@ -73,6 +74,11 @@
             <h1>🎓 Quản lý Hoạt động Đoàn</h1>
             <div class="user-info">
                 <span>Xin chào, <strong>Đoàn Trường</strong></span>
+                
+                <button onclick="window.location.href='pageDashboard.html'" 
+                        style="background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid white; padding: 8px 15px; border-radius: 6px; cursor: pointer; transition: all 0.3s; margin-right: 5px;">
+                    <i class="fa-solid fa-house"></i> Trang chủ
+                </button>
                 <button class="btn-logout" onclick="window.location.href='pageLogin.html'">Đăng xuất</button>
             </div>
         </div>
